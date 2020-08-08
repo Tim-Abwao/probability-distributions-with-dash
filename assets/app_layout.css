@@ -1,5 +1,27 @@
 body {
     max-width: 90%;
     justify-content: center;
-    margin: auto;
+    margin: 4% auto;
+}
+
+@media screen and (min-width: 768px) {
+    .parameters {
+        display: grid;
+        grid-template-columns: 40% 40%;
+        grid-template-rows: 300px;
+        column-gap: 10%;
+    }
+    .graphics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 500px;
+    }
+}
+@media screen and (max-width: 760px) {
+    .parameters, .graphics {
+        display: block;
+    }
+}
+.stats {
+    font-family: 'Courier New', Courier, monospace;
 }

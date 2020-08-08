@@ -64,18 +64,12 @@ def get_random_sample(distribution, size, parameters):
         return 1
 
 
-def int_if_fraction_is_zero(x):
-    """
-    Converts numerical values with zero fractional parts into integers
-    """
-    return int(x) if x % 1 == 0 else x
-
-
 def descriptive_stats(data):
     """
     Returns basic descriptive statistics for the data
     """
-    stats = {'Mean': data.mean(),
+    stats = {'Count': len(data),
+             'Mean': data.mean(),
              'Median': median(data),
              'Standard Deviation': data.std(),
              'Minimum': data.min(),
@@ -86,5 +80,4 @@ def descriptive_stats(data):
     except ValueError:
         stats['Mode'] = "No unique mode."
 
-    return {key: int_if_fraction_is_zero(round(value, 4))
-            for key, value in stats.items()}
+    return stats
