@@ -7,7 +7,7 @@ from dash.dependencies import Input, Output  # State
 
 from stats_functions import descriptive_stats, get_random_sample
 
-distributions = pd.read_csv('distributions.csv', index_col=0).fillna('N/A')
+dist_data = pd.read_csv('distributions.csv', index_col=0).fillna('N/A')
 
 
 app = dash.Dash(__name__, title="Statistical Distributions Sampler",
@@ -30,16 +30,16 @@ app.layout = html.Div([
                         htmlFor='select-distribution'),
              dcc.Dropdown(id='select-distribution',
                           options=[{'label': dist, 'value': dist}
-                                   for dist in distributions.index],
+                                   for dist in dist_data.index],
                           value='Normal'),
              html.Label(id='param1name', className='param-label',
                         htmlFor='parameter1'),
              dcc.Slider(id='parameter1',
-                        min=0.5, max=10, step=0.5, value=10),
+                        min=0.5, max=10, step=0.5, value=5),
              html.Label(id='param2name', className='param-label',
                         htmlFor='parameter2'),
              dcc.Slider(id='parameter2',
-                        min=0.001, max=10, step=0.5, value=10),
+                        min=0.001, max=10, step=0.5, value=5),
              html.Label("Sample size (n):", className='param-label',
                         htmlFor='sample-size'),
              dcc.Slider(id='sample-size', min=10, max=500, value=20,
@@ -61,9 +61,9 @@ app.layout = html.Div([
                Output('parameter2', 'disabled')],
               [Input('select-distribution', 'value')])
 def set_parameters(distribution):
-    dist_data = distributions.loc[distribution]
-    num_params = dist_data['#parameters']
-    param1_name, param2_name = dist_data['param1'], dist_data['param2']
+    dist = dist_data.loc[distribution]
+    num_params = dist['#parameters']
+    param1_name, param2_name = dist['param1'], dist['param2']
     return param1_name, param2_name, True if num_params < 2 else False
 
 

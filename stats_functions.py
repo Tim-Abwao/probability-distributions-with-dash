@@ -42,6 +42,8 @@ def validate_prob(params):
     Ensures that probabilities are in the range 0 <= p <= 1, or else assigns
     a default value of 0.5 to p. Probability (p) is the last value (index -1)
     """
+    if len(params) < 2 and not 0 <= params[-1] <= 1:
+        return [0.5]
     return params if 0 <= params[-1] <= 1 else params[:-1] + (0.5,)
 
 
@@ -50,16 +52,16 @@ def get_random_sample(distribution, size, parameters):
     Returns a random sample of size {size} with the given {parameters},
     for the specified {distribution}.
     """
-    params = [param for param in parameters if param != 'N/A']
+    if distribution in {"Bernoulli", "Geometric"}:
+        parameters = parameters[:-1]
 
     probabilistic_dists = {"Negative Binomial", "Binomial", "Geometric",
                            "Bernoulli"}
-
     if distribution in probabilistic_dists:
-        params = validate_prob(params)
-
+        parameters = validate_prob(parameters)
+    print(distribution, parameters, size)
     try:
-        return distributions[distribution].rvs(*params, size=size)
+        return distributions[distribution].rvs(*parameters, size=size)
     except KeyError:
         return 1
 
