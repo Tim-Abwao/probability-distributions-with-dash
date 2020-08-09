@@ -1,13 +1,13 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import pandas as pd
 import plotly.express as px
-from dash.dependencies import Input, Output  # State
-
+from dash.dependencies import Input, Output
 from stats_functions import descriptive_stats, get_random_sample
+import json
 
-dist_data = pd.read_csv('distributions.csv', index_col=0).fillna('N/A')
+with open('distributions.json') as file:
+    dist_data = json.load(file)
 
 
 app = dash.Dash(__name__, title="Statistical Distributions Sampler",
@@ -30,7 +30,7 @@ app.layout = html.Div([
                         htmlFor='select-distribution'),
              dcc.Dropdown(id='select-distribution',
                           options=[{'label': dist, 'value': dist}
-                                   for dist in dist_data.index],
+                                   for dist in dist_data],
                           value='Normal'),
              html.Label(id='param1name', className='param-label',
                         htmlFor='parameter1'),
@@ -47,6 +47,7 @@ app.layout = html.Div([
                         marks={i: {'label': f'{i}'}
                                for i in range(0, 500, 50)})
              ]),
+        html.Div(html.P(id='description', className='description')),
         html.Div(html.Table(id='summary-stats'), className='stats')
         ], className='parameters'),
     html.Div([
@@ -61,8 +62,8 @@ app.layout = html.Div([
                Output('parameter2', 'disabled')],
               [Input('select-distribution', 'value')])
 def set_parameters(distribution):
-    dist = dist_data.loc[distribution]
-    num_params = dist['#parameters']
+    dist = dist_data[distribution]
+    num_params = dist['num_params']
     param1_name, param2_name = dist['param1'], dist['param2']
     return param1_name, param2_name, True if num_params < 2 else False
 
@@ -84,6 +85,12 @@ def create_sample(distribution, size, *parameters):
                     for name, value in descriptive_stats(sample).items()]
 
     return fig1, fig2, sample_stats
+
+
+@app.callback(Output('description', 'children'),
+              [Input('select-distribution', 'value')])
+def show_description(distribution):
+    return dist_data[distribution]['summary']
 
 
 if __name__ == '__main__':
