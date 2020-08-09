@@ -1,15 +1,15 @@
 {
   "Normal":{
     "num_params":2,
-    "summary":"The Normal distribution is probably the most useful of all. Most physical characteristics naturally exhibit a normal distribution, and many other distributions at scale tend towards it (courtesy of the Central Limit Theorem).  A defining feature of the normal distribution is that the mean, mode and median are equal, resulting in its iconic ‘Bell shaped’ symmetrical probability distribution curve.",
-    "param_info":" µ (mean) ,σ (Standard deviation)",
+    "summary":"A defining feature of the normal distribution is that the mean, mode and median are equal, resulting in its iconic ‘Bell-shaped’, symmetrical probability distribution curve. >Most physical characteristics naturally exhibit a normal distribution, and many other distributions at scale tend towards it (courtesy of the Central Limit Theorem).",
+    "param_info":"µ (mean) ,σ (Standard deviation)",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Normal_distribution",
     "param1":"Mean (µ)",
-    "param2":" Standard deviation (σ)"
+    "param2":"Standard deviation (σ)"
   },
   "Poisson":{
     "num_params":1,
-    "summary":"The Poisson distribution is very handy for modeling the number of times something happens in a given interval of time.  Say for example a shop gets on average 10 customers every hour, the Poisson distribution could help study and predict the customers’ visiting patterns.",
+    "summary":"The Poisson distribution comes in handy when modeling the number of times an event occurs in a given time interval. >Say for example a shop gets on average 10 customers every hour, then the Poisson distribution could help study and predict customer visiting patterns.",
     "param_info":"mean=variance=λ",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Poisson_distribution",
     "param1":"Rate (λ)",
@@ -17,7 +17,7 @@
   },
   "Bernoulli":{
     "num_params":1,
-    "summary":"The Bernoulli distribution models situations which would go one of two possible ways: success or failure, with probabilities p and q=1-p respectively. For example, a coin toss.  If the two events are equally likely, p=0.5.",
+    "summary":"The Bernoulli distribution models situations which could go only one of two possible ways (success or failure, with probabilities p and q = 1-p respectively) e.g. a coin toss. >If the two events are equally likely, p = 0.5.",
     "param_info":"0<=p<=1 (defaults to 0.5 for p>1)",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Bernoulli_distribution",
     "param1":"Probability (p)",
@@ -25,7 +25,7 @@
   },
   "Uniform":{
     "num_params":2,
-    "summary":"For uniform distributions, all values have equal probability. A good example is rolling a (fair) die; all six faces have the same odds of topping (probability = 1\/6).  All the values in a uniformly distributed interval (a,b) have probability 1\/(b-a).",
+    "summary":"In uniform distributions, all values have equal probability. A good example is rolling a (fair) die; all six faces have the same odds of topping (probability = 1\/6). >All the values in a uniformly distributed interval (a,b) have probability 1\/(b-a).",
     "param_info":"a (min), range = max – min",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Uniform_distribution_(continuous)",
     "param1":"Lower bound (a)",
@@ -33,7 +33,7 @@
   },
   "Geometric":{
     "num_params":1,
-    "summary":"The Geometric distribution helps model the number of tries it will take before registering the first success. For example, the number of failures before an experiment succeeds or an athlete hits a target.",
+    "summary":"The Geometric distribution models the number of tries it will take before registering the first success. >Examples include estimating the number of failures before an experiment succeeds, or an athlete hits a target.",
     "param_info":"0<=p<=1 (defaults to 0.5 for p>1)",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Geometric_distribution",
     "param1":"Probability (p)",
@@ -57,7 +57,7 @@
   },
   "Chi-squared":{
     "num_params":1,
-    "summary":"The chi-square distribution is derived from the summation of standardized & squared normally distributed variables. It is essential in tests for hypotheses as most test statistics are approximately chi-square distributed.",
+    "summary":"The chi-square distribution is derived from the summation of standardized & squared normally distributed variables. >It is essential in tests for hypotheses, since most test statistics are approximately chi-square distributed.",
     "param_info":"ν  > 0 (degrees of freedom)",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Chi-squared_distribution",
     "param1":"Degrees of freedom (ν)",
@@ -65,7 +65,7 @@
   },
   "Exponential":{
     "num_params":1,
-    "summary":"The Exponential distribution models the time intervals between events occurring at a constant rate (having a Poisson distribution).  It can help analyse the inter-arrival times of customers i.e how long a stall will stay idle before the next customer comes assuming 40 customers come in every hour. ",
+    "summary":"The Exponential distribution models the time intervals between events occurring at a constant rate (having a Poisson distribution). >It can help analyse the inter-arrival times of customers: how long a stall will stay idle before the next customer comes along, assuming 40 customers come in every hour.",
     "param_info":"λ  > 0 ",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Exponential_distribution",
     "param1":"Rate (λ)",
@@ -89,7 +89,7 @@
   },
   "Pareto":{
     "num_params":1,
-    "summary":"The Pareto distribution models features where a large proportion of observations come from a small amount of variables e.g. most notably the imbalances in income distribution. Also, human settlement patterns and error rates.",
+    "summary":"The Pareto distribution models features where a large proportion of observations come from a small amount of variables: most notably the imbalances in income distribution, human settlement patterns and error rates.",
     "param_info":"β > 0",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Pareto_distribution",
     "param1":"Beta (β)",
@@ -97,7 +97,7 @@
   },
   "Student’s t":{
     "num_params":1,
-    "summary":"The Student’s t-test is very useful for estimating the mean of small, normally distributed samples, and for testing the significance of the difference in two sample means.",
+    "summary":"The Student’s t-test is very useful for estimating the mean of small, normally distributed samples; and for testing the significance of the difference in two sample means.",
     "param_info":"ν  > 0 (degrees of freedom)",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Student%27s_t-distribution",
     "param1":"Degrees of freedom (ν)",
@@ -105,7 +105,7 @@
   },
   "Binomial":{
     "num_params":2,
-    "summary":"The Binomial distribution models the number of success for n Bernoulli trials (succeed or fail scenarios). A common application is determining whether a desired threshold will be met given a predetermined fail rate.",
+    "summary":"The Binomial distribution models the number of success for n Bernoulli trials (succeed or fail scenarios). >A common application is determining whether a desired threshold will be met given a predetermined fail rate.",
     "param_info":"n > 0 (no. of trials), 0<=p<=1 (defaults to 0.5 for p>1)",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Binomial_distribution",
     "param1":"No. of trials (n)",
@@ -113,7 +113,7 @@
   },
   "Negative Binomial":{
     "num_params":2,
-    "summary":"The Negative Binomial distribution models the number of successes before the ith failure. A possible application is in predicting the number of wins before the third failure, given the likelihood of success on each attempt.",
+    "summary":"The Negative Binomial distribution models the number of successes before the ith failure. >A possible application is in predicting the number of wins before the third failure, given the likelihood of success on each attempt.",
     "param_info":"n > 0 (no. of trials), 0<=p<=1 (defaults to 0.5 for p>1)",
     "wiki_link":"https:\/\/en.wikipedia.org\/wiki\/Negative_binomial_distribution",
     "param1":"No of trials (n)",

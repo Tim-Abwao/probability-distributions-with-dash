@@ -47,7 +47,7 @@ app.layout = html.Div([
                         marks={i: {'label': f'{i}'}
                                for i in range(0, 500, 50)})
              ]),
-        html.Div(html.P(id='description', className='description')),
+        html.Div(id='description', className='description'),
         html.Div(html.Table(id='summary-stats'), className='stats')
         ], className='parameters'),
     html.Div([
@@ -80,7 +80,7 @@ def create_sample(distribution, size, *parameters):
     fig1 = px.histogram(x=sample, marginal='rug')
     fig2 = px.violin(y=sample, box=True, points='all')
 
-    sample_stats = [html.Th('Summary Statistics:')] + \
+    sample_stats = [html.Th('Summary Statistics')] + \
                    [html.Tr([html.Td(f'{name}:'), html.Td(value)])
                     for name, value in descriptive_stats(sample).items()]
 
@@ -90,7 +90,8 @@ def create_sample(distribution, size, *parameters):
 @app.callback(Output('description', 'children'),
               [Input('select-distribution', 'value')])
 def show_description(distribution):
-    return dist_data[distribution]['summary']
+    return [html.P(desc) for desc in
+            dist_data[distribution]['summary'].split('>')]
 
 
 if __name__ == '__main__':
