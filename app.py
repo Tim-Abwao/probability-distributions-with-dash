@@ -50,7 +50,8 @@ app.layout = html.Div([
                                for i in range(0, 500, 50)})
              ]),
         html.Div(id='description', className='description'),
-        html.Div(html.Table(id='summary-stats'), className='stats')
+        html.Div([html.Table(id='summary-stats'),
+                  html.P(id='current-params')], className='stats'),
         ], className='parameters'),
     html.Div([
         html.Div(dcc.Graph(id='histogram')),
@@ -105,6 +106,19 @@ def scale_probability_slider(*params):
         return 1 if 'Prob' in name else 10
     new_max = tuple(check_if_probability(x) for x in params)
     return new_max
+
+
+@app.callback(Output('current-params', 'children'),
+              [Input('param1name', 'children'),
+               Input('parameter1', 'value'),
+               Input('param2name', 'children'),
+               Input('parameter2', 'value'),
+               Input('sample-size', 'value')])
+def display_current_params(nam1, val1, nam2, val2, n):
+    if nam2 == 'N/A':
+        nam2 = val2 = ''
+    return [html.B('Parameters: '),
+            f'{nam1}: {val1}, {nam2}: {val2}, Sample size: {n}']
 
 
 if __name__ == '__main__':

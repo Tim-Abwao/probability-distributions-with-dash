@@ -33,5 +33,5 @@ body {
 }
 
 tr:nth-child(even) {
-    background-color: teal;
+    background-color: cyan;
 }
