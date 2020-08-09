@@ -1,5 +1,5 @@
 #  from datetime import datetime
-from statistics import median, mode
+import numpy as np
 from scipy.stats import (
     norm,
     poisson,
@@ -16,6 +16,7 @@ from scipy.stats import (
     pareto,
     binom,
     nbinom,
+    mode
 )
 
 distributions = {
@@ -59,27 +60,25 @@ def get_random_sample(distribution, size, parameters):
                            "Bernoulli"}
     if distribution in probabilistic_dists:
         parameters = validate_prob(parameters)
-    print(distribution, parameters, size)
     try:
         return distributions[distribution].rvs(*parameters, size=size)
-    except KeyError:
-        return 1
+    except KeyError as absent_key:
+        return f'Distribution {absent_key} not yet included.'
 
 
 def descriptive_stats(data):
     """
     Returns basic descriptive statistics for the data
     """
+    q1, q2, q3 = np.quantile(data, [0.25, 0.5, 0.75])
     stats = {'Count': len(data),
              'Mean': data.mean(),
-             'Median': median(data),
              'Standard Deviation': data.std(),
              'Minimum': data.min(),
-             'Maximum': data.max()
+             'Q1': q1,
+             'Median': q2,
+             'Q3': q3,
+             'Maximum': data.max(),
+             'Mode': mode(data)[0][0]  # mode is nested in ModeResult class
              }
-    try:
-        stats['Mode'] = mode(data)
-    except ValueError:
-        stats['Mode'] = "No unique mode."
-
-    return stats
+    return {key: round(value, 4) for key, value in stats.items()}
