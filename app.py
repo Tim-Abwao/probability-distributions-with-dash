@@ -9,7 +9,7 @@ import json
 with open('distributions.json') as file:
     dist_data = json.load(file)
 
-
+param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]
 app = dash.Dash(__name__, title="Statistical Distributions Sampler",
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'
@@ -34,12 +34,14 @@ app.layout = html.Div([
                           value='Normal'),
              html.Label(id='param1name', className='param-label',
                         htmlFor='parameter1'),
-             dcc.Slider(id='parameter1',
-                        min=0.5, max=10, step=0.5, value=5),
+             dcc.Slider(id='parameter1', included=False, min=0.05, max=10,
+                        step=0.01, value=5,
+                        marks={i: {'label': f'{i}'} for i in param_ticks}),
              html.Label(id='param2name', className='param-label',
                         htmlFor='parameter2'),
-             dcc.Slider(id='parameter2',
-                        min=0.001, max=10, step=0.5, value=5),
+             dcc.Slider(id='parameter2', included=False, min=0.05, max=10,
+                        step=0.01, value=5,
+                        marks={i: {'label': f'{i}'} for i in param_ticks}),
              html.Label("Sample size (n):", className='param-label',
                         htmlFor='sample-size'),
              dcc.Slider(id='sample-size', min=10, max=500, value=20,
@@ -92,6 +94,17 @@ def create_sample(distribution, size, *parameters):
 def show_description(distribution):
     return [html.P(desc) for desc in
             dist_data[distribution]['summary'].split('>')]
+
+
+@app.callback([Output('parameter1', 'max'),
+               Output('parameter2', 'max')],
+              [Input('param1name', 'children'),
+               Input('param2name', 'children')])
+def scale_probability_slider(*params):
+    def check_if_probability(name):
+        return 1 if 'Prob' in name else 10
+    new_max = tuple(check_if_probability(x) for x in params)
+    return new_max
 
 
 if __name__ == '__main__':
