@@ -7,9 +7,10 @@ body {
 @media screen and (min-width: 1024px) {
     .parameters {
         display: grid;
-        grid-template-columns: 35% 30% 25%;
+        grid-template-columns: 30% 35% 25%;
         grid-template-rows: 300px;
         column-gap: 5%;
+        overflow-y: auto;
     }
     .graphics {
         display: grid;

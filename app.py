@@ -27,35 +27,35 @@ app.layout = html.Div([
     set parameters, and see their effect in real time.
     """]),
     html.Div([
-        #  Distributions drop-down menu
-        html.Div(id='parameters', children=[
-             html.Label("Statistical distribution:", className='param-label',
-                        htmlFor='select-distribution'),
-             dcc.Dropdown(id='select-distribution',
-                          options=[{'label': dist, 'value': dist}
-                                   for dist in dist_data],
-                          value='Normal'),
-             html.Label(id='param1name', className='param-label',
-                        htmlFor='parameter1'),
-             dcc.Slider(id='parameter1', included=False, min=0.05, max=10,
-                        step=0.01, value=5,
-                        tooltip={'placement': 'top', 'always_visible': True},
-                        marks={i: {'label': f'{i}'} for i in param_ticks}),
-             html.Label(id='param2name', className='param-label',
-                        htmlFor='parameter2'),
-             dcc.Slider(id='parameter2', included=False, min=0.05, max=10,
-                        step=0.01, value=5,
-                        tooltip={'placement': 'top', 'always_visible': True},
-                        marks={i: {'label': f'{i}'} for i in param_ticks}),
-             html.Label("Sample size (n):", className='param-label',
-                        htmlFor='sample-size'),
-             dcc.Slider(id='sample-size', min=10, max=500, value=20,
-                        step=10, included=False,
-                        tooltip={'placement': 'top', 'always_visible': True},
-                        marks={i: {'label': f'{i}'}
-                               for i in range(0, 500, 50)})
-             ]),
         html.Div(id='description', className='description'),
+        # Distribution and parameter selection
+        html.Div(id='parameters', children=[
+            # Distribution drop-down menu
+            html.Label("Statistical distribution:", className='param-label',
+                       htmlFor='select-distribution'),
+            dcc.Dropdown(id='select-distribution', value='Normal',
+                         options=[{'label': dist, 'value': dist}
+                                  for dist in dist_data]),
+            # Parameter 1 slider
+            html.Label(id='param1name', className='param-label',
+                       htmlFor='parameter1'),
+            dcc.Slider(id='parameter1', included=False, min=0.05, max=10,
+                       step=0.01, value=5, tooltip={'placement': 'top'},
+                       marks={i: {'label': f'{i}'} for i in param_ticks}),
+            # Parameter 2 slider
+            html.Label(id='param2name', className='param-label',
+                       htmlFor='parameter2'),
+            dcc.Slider(id='parameter2', included=False, min=0.05, max=10,
+                       step=0.01, value=5, tooltip={'placement': 'top'},
+                       marks={i: {'label': f'{i}'} for i in param_ticks}),
+            # Sample size slider
+            html.Label("Sample size (n):", className='param-label',
+                       htmlFor='sample-size'),
+            dcc.Slider(id='sample-size', min=10, max=500, value=20,
+                       step=10, included=False, tooltip={'placement': 'top'},
+                       marks={i: {'label': f'{i}'}
+                              for i in range(0, 500, 50)})
+            ]),
         html.Div([html.Table(id='summary-stats'),
                   html.P(id='current-params')], className='stats'),
         ], className='parameters'),
@@ -84,13 +84,15 @@ def set_parameters(distribution):
                Input('sample-size', 'value'),
                Input('parameter1', 'value'),
                Input('parameter2', 'value')])
-def create_sample(distribution, size, *parameters):
+def create_and_plot_sample(distribution, size, *parameters):
     sample = get_random_sample(distribution, size, parameters)
+
     fig1 = px.histogram(x=sample, marginal='rug', opacity=0.5,
                         color_discrete_sequence=['teal'],
                         title=f'{distribution} Sample Histogram')
+
     fig2 = px.violin(x=sample, box=True, color_discrete_sequence=['teal'],
-                     title=f'{distribution} Violin Plot')
+                     title=f'{distribution} Sample Violin Plot')
 
     sample_stats = [html.Th('Summary Statistics')] + \
                    [html.Tr([html.Td(f'{name}:'), html.Td(value)])
@@ -102,8 +104,9 @@ def create_sample(distribution, size, *parameters):
 @app.callback(Output('description', 'children'),
               [Input('select-distribution', 'value')])
 def show_description(distribution):
-    return [html.P(desc) for desc in
-            [dist_data[distribution]['summary'].split('>')] +
+    return [html.H3(f'Current selection: {distribution} Distribution')] + \
+           [html.P(desc)
+            for desc in [dist_data[distribution]['summary'].split('>')] +
             [html.A('Learn more...', className='wiki-link',
              href=dist_data[distribution]['wiki_link'])]]
 
@@ -133,4 +136,4 @@ def display_current_params(nam1, val1, nam2, val2, n):
 
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
