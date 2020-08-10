@@ -10,10 +10,13 @@ with open('distributions.json') as file:
     dist_data = json.load(file)
 
 param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]
+
+
 app = dash.Dash(__name__, title="Statistical Distributions Sampler",
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'
                             }])
+server = app.server
 
 app.layout = html.Div([
     # Top level heading
@@ -130,4 +133,4 @@ def display_current_params(nam1, val1, nam2, val2, n):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
