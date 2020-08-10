@@ -136,4 +136,4 @@ def display_current_params(nam1, val1, nam2, val2, n):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
