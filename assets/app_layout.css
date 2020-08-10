@@ -51,3 +51,9 @@ body {
 tr:nth-child(even) {
     background-color: rgba(0,128,128,0.5);
 }
+.wiki-link {
+    color: rgba(0,128,128,0.5);
+}
+.wiki-link:hover {
+    color: rgba(0,128,128,0.9);
+}

@@ -100,7 +100,9 @@ def create_sample(distribution, size, *parameters):
               [Input('select-distribution', 'value')])
 def show_description(distribution):
     return [html.P(desc) for desc in
-            dist_data[distribution]['summary'].split('>')]
+            [dist_data[distribution]['summary'].split('>')] +
+            [html.A('Learn more...', className='wiki-link',
+             href=dist_data[distribution]['wiki_link'])]]
 
 
 @app.callback([Output('parameter1', 'max'),
