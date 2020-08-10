@@ -36,16 +36,19 @@ app.layout = html.Div([
                         htmlFor='parameter1'),
              dcc.Slider(id='parameter1', included=False, min=0.05, max=10,
                         step=0.01, value=5,
+                        tooltip={'placement': 'top', 'always_visible': True},
                         marks={i: {'label': f'{i}'} for i in param_ticks}),
              html.Label(id='param2name', className='param-label',
                         htmlFor='parameter2'),
              dcc.Slider(id='parameter2', included=False, min=0.05, max=10,
                         step=0.01, value=5,
+                        tooltip={'placement': 'top', 'always_visible': True},
                         marks={i: {'label': f'{i}'} for i in param_ticks}),
              html.Label("Sample size (n):", className='param-label',
                         htmlFor='sample-size'),
              dcc.Slider(id='sample-size', min=10, max=500, value=20,
                         step=10, included=False,
+                        tooltip={'placement': 'top', 'always_visible': True},
                         marks={i: {'label': f'{i}'}
                                for i in range(0, 500, 50)})
              ]),
@@ -80,8 +83,11 @@ def set_parameters(distribution):
                Input('parameter2', 'value')])
 def create_sample(distribution, size, *parameters):
     sample = get_random_sample(distribution, size, parameters)
-    fig1 = px.histogram(x=sample, marginal='rug')
-    fig2 = px.violin(y=sample, box=True, points='all')
+    fig1 = px.histogram(x=sample, marginal='rug', opacity=0.5,
+                        color_discrete_sequence=['teal'],
+                        title=f'{distribution} Sample Histogram')
+    fig2 = px.violin(x=sample, box=True, color_discrete_sequence=['teal'],
+                     title=f'{distribution} Violin Plot')
 
     sample_stats = [html.Th('Summary Statistics')] + \
                    [html.Tr([html.Td(f'{name}:'), html.Td(value)])
