@@ -1,74 +1,51 @@
-#  from datetime import datetime
 import numpy as np
 from scipy.stats import (
-    norm,
-    poisson,
-    bernoulli,
-    uniform,
-    geom,
-    alpha,
-    t,
-    beta,
-    chi2,
-    expon,
-    f,
-    gamma,
-    pareto,
-    binom,
-    nbinom,
+    norm as Normal,
+    poisson as Poisson,
+    bernoulli as Bernoulli,
+    uniform as Uniform,
+    geom as Geometric,
+    alpha as Alpha,
+    t as Students_t,
+    beta as Beta,
+    chi2 as Chi_squared,
+    expon as Exponential,
+    f as F,
+    gamma as Gamma,
+    pareto as Pareto,
+    binom as Binomial,
+    nbinom as Negative_Binomial,
     mode
 )
-
-distributions = {
-    "Normal": norm,
-    "Poisson": poisson,
-    "Bernoulli": bernoulli,
-    "Uniform": uniform,
-    "Geometric": geom,
-    "Alpha": alpha,
-    "Beta": beta,
-    "Chi-squared": chi2,
-    "Exponential": expon,
-    "F": f,
-    "Gamma": gamma,
-    "Pareto": pareto,
-    "Student's t": t,
-    "Binomial": binom,
-    "Negative Binomial":  nbinom
-}
 
 
 def validate_prob(params):
     """
-    Ensures that probabilities are in the range 0 <= p <= 1, or else assigns
-    a default value of 0.5 to p. Probability (p) is the last value (index -1)
+    Ensure that probabilities are in the range 0 <= p <= 1, or else assign
+    a default value of 0.5 to p.
     """
+    # Probability (p) is the last value
     if len(params) < 2 and not 0 <= params[-1] <= 1:
-        return [0.5]
+        return (0.5,)
     return params if 0 <= params[-1] <= 1 else params[:-1] + (0.5,)
 
 
 def get_random_sample(distribution, size, parameters):
     """
-    Returns a random sample of size {size} with the given {parameters},
-    for the specified {distribution}.
+    Get a sample of the specified distribution with given size and parameters
     """
     if distribution in {"Bernoulli", "Geometric"}:
         parameters = parameters[:-1]
 
-    probabilistic_dists = {"Negative Binomial", "Binomial", "Geometric",
-                           "Bernoulli"}
-    if distribution in probabilistic_dists:
+    if distribution in {"Negative_Binomial", "Binomial", "Geometric",
+                        "Bernoulli"}:
         parameters = validate_prob(parameters)
-    try:
-        return distributions[distribution].rvs(*parameters, size=size)
-    except KeyError as absent_key:
-        return f'Distribution {absent_key} not yet included.'
+    return eval(f'{distribution}.rvs(*parameters, size=size)')
 
 
 def descriptive_stats(data):
     """
-    Returns basic descriptive statistics for the data
+    Get basic descriptive statistics for the given data
     """
     q1, q2, q3 = np.quantile(data, [0.25, 0.5, 0.75])
     stats = {'Count': len(data),
