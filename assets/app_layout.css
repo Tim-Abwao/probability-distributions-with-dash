@@ -9,7 +9,7 @@ body {
         display: grid;
         grid-template-columns: 30% 35% 25%;
         grid-template-rows: 300px;
-        column-gap: 5%;
+        gap: 5%;
         overflow-y: auto;
     }
     .graphics {
@@ -23,8 +23,8 @@ body {
     .parameters {
         display: grid;
         grid-template-columns: 45% 45%;
-        grid-template-rows: 300px 300px;
-        column-gap: 5%;
+        grid-template-rows: minmax(300px, 340px);
+        gap: 5%;
     }
     .graphics {
         display: grid;
@@ -39,6 +39,9 @@ body {
     .parameters, .graphics {
         display: block;
     }
+    .description, #parameters {
+        margin-bottom: 7%;
+    }
 }
 
 .stats {
@@ -47,14 +50,17 @@ body {
 
 .description {
     font-style: italic;
+    background-color: rgba(0,128,128,0.3);
+    padding: 4%;
+    border-radius: 2%;
 }
 
 tr:nth-child(even) {
     background-color: rgba(0,128,128,0.5);
 }
 .wiki-link {
-    color: rgba(0,128,128,0.5);
+    color: rgba(0,128,128,0.7);
 }
 .wiki-link:hover {
-    color: rgba(0,128,128,0.9);
+    color: rgba(0,128,128);
 }
