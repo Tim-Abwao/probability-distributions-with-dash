@@ -9,13 +9,14 @@ import json
 with open('distributions.json') as file:
     dist_data = json.load(file)
 
-param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]  # displayed on parameter sliders
+param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]  # for parameter sliders
 
 
 app = dash.Dash(__name__, title="Statistical Distributions Sampler",
-                meta_tags=[{'name': 'viewport',
-                            'content': 'width=device-width, initial-scale=1.0'
-                            }])
+                meta_tags=[
+                    {'name': 'viewport',
+                     'content': 'width=device-width, initial-scale=1.0'},
+                ])
 server = app.server
 
 app.layout = html.Div([
@@ -27,7 +28,7 @@ app.layout = html.Div([
     set parameters, and see their effect in real time.
     """]),
     html.Div([
-        # Container for distribution description
+        # Selected distribution's description
         html.Div(id='description', className='description'),
 
         # Distribution and parameter selection
@@ -70,8 +71,8 @@ app.layout = html.Div([
     html.Div([
         html.Div(dcc.Graph(id='histogram')),
         html.Div(dcc.Graph(id='violinplot')),
-    ], className='graphics',)
-    ])
+    ], className='graphics')
+])
 
 
 @app.callback([Output('param1name', 'children'),
@@ -80,28 +81,26 @@ app.layout = html.Div([
               [Input('select-distribution', 'value')])
 def set_parameters(distribution):
     """
-    Gets and sets the parameter names in both parameter sliders, given a
-    particular distribution. Also, disables the second parameter slider if
-    the distribution has only one parameter.
+    Set the parameter labels for the selected distribution. Additionally,
+    disable 2nd parameter slider if the distribution doesn't require it.
     """
     dist = dist_data[distribution]
     param1_name, param2_name = dist['param1'], dist['param2']
     num_params = dist['num_params']
-    return param1_name, param2_name, True if num_params < 2 else False
+    omit_param2 = True if num_params < 2 else False
+    return param1_name, param2_name, omit_param2
 
 
 @app.callback([Output('parameter1', 'max'),
                Output('parameter2', 'max')],
               [Input('param1name', 'children'),
                Input('param2name', 'children')])
-def scale_probability_slider(*params):
+def scale_probability_slider(*param_names):
     """
-    Rescales a parameter slider to the range (0, 1) if it is a probability
+    Rescale a parameter slider to the range [0, 1] if it is a probability.
     """
-    def check_if_probability(name):
-        return 1 if 'Prob' in name else 10
-    new_max = tuple(check_if_probability(x) for x in params)
-    return new_max
+    maximum = [1 if 'Prob' in name else 10 for name in param_names]
+    return maximum
 
 
 @app.callback(Output('current-params', 'children'),
@@ -111,22 +110,24 @@ def scale_probability_slider(*params):
                Input('parameter2', 'value'),
                Input('sample-size', 'value')])
 def display_current_params(nam1, val1, nam2, val2, n):
-    """Displays the current parameters: their names and values"""
+    """Display the current parameters as name:value pairs."""
     if nam2 == 'N/A':
-        nam2 = val2 = ''
+        nam2_val2 = ''
+    else:
+        nam2_val2 = f' {nam2}: {val2},'
     return [html.B('Parameters: '),
-            f'{nam1}: {val1}, {nam2}: {val2}, Sample size: {n}']
+            f'{nam1}: {val1},{nam2_val2} Sample size: {n}']
 
 
 @app.callback(Output('description', 'children'),
               [Input('select-distribution', 'value')])
 def show_description(distribution):
-    """Parses the distribution summary information as paragraphs"""
-    return [html.H3(f'Current selection: {distribution} Distribution')] + \
-           [html.P(desc)
-            for desc in [dist_data[distribution]['summary'].split('>')] +
-            [html.A('Learn more...', className='wiki-link',
-             href=dist_data[distribution]['wiki_link'])]]
+    """Display selected distribution's summary information."""
+    return ([html.H3(f'Current selection: {distribution} Distribution')]
+            + [html.P(desc)
+               for desc in [dist_data[distribution]['summary'].split('>')]
+            + [html.A('Learn more...', className='wiki-link',
+               href=dist_data[distribution]['wiki_link'])]])
 
 
 @app.callback([Output('histogram', 'figure'),
@@ -136,11 +137,10 @@ def show_description(distribution):
                Input('sample-size', 'value'),
                Input('parameter1', 'value'),
                Input('parameter2', 'value')])
-def create_and_plot_sample(distribution, size, *parameters):
+def process_sample(distribution, size, *parameters):
     """
-    Creates a random sample of the selected distribution using the specified
-    parameters, then plots a histogram and a violin plot. Finally, descriptive
-    statistics are computed and packaged as a table.
+    Create a sample of the selected distribution with specified parameters,
+    plot a histogram & a violin plot, then compute descriptive statistics.
     """
     sample = get_random_sample(distribution, size, parameters)
 
@@ -151,9 +151,9 @@ def create_and_plot_sample(distribution, size, *parameters):
     fig2 = px.violin(x=sample, box=True, color_discrete_sequence=['teal'],
                      title=f'{distribution} Sample Violin Plot')
 
-    sample_stats = [html.Th('Summary Statistics')] + \
-                   [html.Tr([html.Td(f'{name}:'), html.Td(value)])
-                    for name, value in descriptive_stats(sample).items()]
+    sample_stats = ([html.Th('Summary Statistics')]
+                    + [html.Tr([html.Td(f'{name}:'), html.Td(value)])
+                       for name, value in descriptive_stats(sample).items()])
 
     return fig1, fig2, sample_stats
 
