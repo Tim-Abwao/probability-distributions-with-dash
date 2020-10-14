@@ -55,7 +55,7 @@
     "param1":"Alpha (α)",
     "param2":" Beta (β)"
   },
-  "Chi_squared":{
+  "Chi Squared":{
     "num_params":1,
     "summary":"The chi-square distribution is derived from the summation of standardized & squared normally distributed variables. >It is essential in tests for hypotheses, since most test statistics are approximately chi-square distributed.",
     "param_info":"ν  > 0 (degrees of freedom)",
@@ -95,7 +95,7 @@
     "param1":"Beta (β)",
     "param2":"N\/A"
   },
-  "Students_t":{
+  "Students t":{
     "num_params":1,
     "summary":"The Student’s t-test is very useful for estimating the mean of small, normally distributed samples; and for testing the significance of the difference in two sample means.",
     "param_info":"ν  > 0 (degrees of freedom)",
@@ -111,7 +111,7 @@
     "param1":"No. of trials (n)",
     "param2":"Probability (p)"
   },
-  "Negative_Binomial":{
+  "Negative Binomial":{
     "num_params":2,
     "summary":"The Negative Binomial distribution models the number of successes before the ith failure. >A possible application is in predicting the number of wins before the third failure, given the likelihood of success on each attempt.",
     "param_info":"n > 0 (no. of trials), 0<=p<=1 (defaults to 0.5 for p>1)",

@@ -12,11 +12,13 @@ with open('distributions.json') as file:
 param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]  # for parameter sliders
 
 
-app = dash.Dash(__name__, title="Statistical Distributions Sampler",
-                meta_tags=[
-                    {'name': 'viewport',
-                     'content': 'width=device-width, initial-scale=1.0'},
-                ])
+app = dash.Dash(
+    __name__,
+    title="Statistical Distributions Sampler",
+    meta_tags=[{'name': 'viewport',
+                'content': 'width=device-width, initial-scale=1.0'}]
+)
+
 server = app.server
 
 app.layout = html.Div([
