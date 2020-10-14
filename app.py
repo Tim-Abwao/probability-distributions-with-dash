@@ -38,7 +38,9 @@ app.layout = html.Div([
                        htmlFor='select-distribution'),
             dcc.Dropdown(id='select-distribution', value='Normal',
                          options=[{'label': dist, 'value': dist}
-                                  for dist in dist_data]),
+                                  for dist in dist_data],
+                         style={'color': 'teal'}
+                         ),
             # Parameter 1 slider
             html.Label(id='param1name', className='param-label',
                        htmlFor='parameter1'),
@@ -146,10 +148,12 @@ def process_sample(distribution, size, *parameters):
 
     fig1 = px.histogram(x=sample, marginal='box', opacity=0.5,
                         color_discrete_sequence=['teal'],
-                        title=f'{distribution} Sample Histogram')
+                        title=f'{distribution} Sample Histogram',
+                        template='plotly_dark')
 
     fig2 = px.violin(x=sample, box=True, color_discrete_sequence=['teal'],
-                     title=f'{distribution} Sample Violin Plot')
+                     title=f'{distribution} Sample Violin Plot',
+                     template='plotly_dark')
 
     sample_stats = ([html.Th('Summary Statistics')]
                     + [html.Tr([html.Td(f'{name}:'), html.Td(value)])
