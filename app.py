@@ -73,8 +73,10 @@ app.layout = html.Div([
 
     # Container for the graphs
     html.Div([
-        html.Div(dcc.Graph(id='histogram')),
-        html.Div(dcc.Graph(id='violinplot')),
+        html.Div(dcc.Graph(id='histogram',
+                           config={'displayModeBar': False})),
+        html.Div(dcc.Graph(id='violinplot',
+                           config={'displayModeBar': False})),
     ], className='graphics')
 ])
 
@@ -152,10 +154,14 @@ def process_sample(distribution, size, *parameters):
                         color_discrete_sequence=['teal'],
                         title=f'{distribution} Sample Histogram',
                         template='plotly_dark')
+    fig1.update_xaxes(fixedrange=True)
+    fig1.update_yaxes(fixedrange=True)
 
     fig2 = px.violin(x=sample, box=True, color_discrete_sequence=['teal'],
                      title=f'{distribution} Sample Violin Plot',
                      template='plotly_dark')
+    fig2.update_xaxes(fixedrange=True)
+    fig2.update_yaxes(fixedrange=True)
 
     sample_stats = ([html.Th('Summary Statistics')]
                     + [html.Tr([html.Td(f'{name}:'), html.Td(value)])
