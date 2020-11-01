@@ -151,16 +151,18 @@ def process_sample(distribution, size, *parameters):
     sample = get_random_sample(distribution, size, parameters)
 
     fig1 = px.histogram(x=sample, opacity=0.5, template='plotly_dark',
-                        color_discrete_sequence=['teal'],
+                        color_discrete_sequence=['cyan'],
                         title=f'{distribution} Sample Histogram')
     fig1.update_xaxes(fixedrange=True, title='Values')
     fig1.update_yaxes(fixedrange=True, title='Frequency')
+    fig1.update_layout({'plot_bgcolor': '#333', 'paper_bgcolor': '#333'})
 
-    fig2 = px.violin(x=sample, box=True, color_discrete_sequence=['teal'],
+    fig2 = px.violin(x=sample, box=True, color_discrete_sequence=['cyan'],
                      title=f'{distribution} Sample Violin Plot',
                      template='plotly_dark')
     fig2.update_xaxes(fixedrange=True, title='Values')
     fig2.update_yaxes(fixedrange=True)
+    fig2.update_layout({'plot_bgcolor': '#333', 'paper_bgcolor': '#333'})
 
     sample_stats = ([html.Th('Summary Statistics')]
                     + [html.Tr([html.Td(f'{name}:'), html.Td(value)])
