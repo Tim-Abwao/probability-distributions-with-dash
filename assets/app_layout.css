@@ -2,7 +2,7 @@ body {
     max-width: 90%;
     justify-content: center;
     margin: 2% auto;
-    color: #fff;
+    color: #ccc;
     background-color: rgb(70, 70, 70);
     font-size: 0.95em;
 }
@@ -28,8 +28,7 @@ body {
         grid-template-columns: 45% 45%;
         grid-template-rows: repeat(2, minmax(300px, auto));
         gap: 5%;
-
-    }
+}
     .graphics {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -54,14 +53,16 @@ body {
 }
 
 .description p {
-    font-style: italic;
-    background-color: rgba(0, 200, 200, 0.8);
+    font-style: oblique;
+    color: #333;
+    background-color: cyan;
     padding: 4%;
     border-radius: 2%;
 }
 
 tr:nth-child(even) {
-    background-color: rgba(0, 200, 200, 0.8);
+    background-color: cyan;
+    color: darkslategray;
 }
 
 .wiki-link {
@@ -69,5 +70,33 @@ tr:nth-child(even) {
 }
 
 .wiki-link:hover {
-    color: rgba(0, 128, 128);
+    color: rgb(223, 255, 255);
+}
+
+.Select {
+    color: #eee;
+}
+
+.Select-control {
+    background-color: #444;
+    border-radius: 4px;
+    border: 1px solid cyan;
+}
+
+.is-open>.Select-control {
+    background: #444;
+    border-color: cyan;
+}
+
+.is-focused:not(.is-open)>.Select-control {
+    border-color: cyan;
+}
+
+.Select-menu-outer {
+    background-color: #444;
+    border: 1px solid cyan;
+}
+
+.Select-value-label {
+    color: aqua !important;
 }

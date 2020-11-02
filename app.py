@@ -40,9 +40,7 @@ app.layout = html.Div([
                        htmlFor='select-distribution'),
             dcc.Dropdown(id='select-distribution', value='Normal',
                          options=[{'label': dist, 'value': dist}
-                                  for dist in dist_data],
-                         style={'color': 'teal'}
-                         ),
+                                  for dist in dist_data]),
             # Parameter 1 slider
             html.Label(id='param1name', className='param-label',
                        htmlFor='parameter1'),
@@ -90,6 +88,8 @@ def set_parameters(distribution):
     Set the parameter labels for the selected distribution. Additionally,
     disable 2nd parameter slider if the distribution doesn't require it.
     """
+    if distribution is None:
+        distribution = "Normal"
     dist = dist_data[distribution]
     param1_name, param2_name = dist['param1'], dist['param2']
     num_params = dist['num_params']
@@ -129,6 +129,8 @@ def display_current_params(nam1, val1, nam2, val2, n):
               [Input('select-distribution', 'value')])
 def show_description(distribution):
     """Display selected distribution's summary information."""
+    if distribution is None:
+        distribution = "Normal"
     return ([html.H3(f'Current selection: {distribution} Distribution')]
             + [html.P(desc)
                for desc in [dist_data[distribution]['summary'].split('>')]
@@ -148,9 +150,11 @@ def process_sample(distribution, size, *parameters):
     Create a sample of the selected distribution with specified parameters,
     plot a histogram & a violin plot, then compute descriptive statistics.
     """
+    if distribution is None:
+        distribution = "Normal"
     sample = get_random_sample(distribution, size, parameters)
 
-    fig1 = px.histogram(x=sample, opacity=0.5, template='plotly_dark',
+    fig1 = px.histogram(x=sample, opacity=0.9, template='plotly_dark',
                         color_discrete_sequence=['cyan'],
                         title=f'{distribution} Sample Histogram')
     fig1.update_xaxes(fixedrange=True, title='Values')
