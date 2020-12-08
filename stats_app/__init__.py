@@ -46,6 +46,7 @@ app.layout = html.Div([
                            className='param-label',
                            htmlFor='select-distribution'),
                 dcc.Dropdown(id='select-distribution', value='Normal',
+                             searchable=False, clearable=False,
                              options=[{'label': dist, 'value': dist}
                                       for dist in dist_data]),
 
@@ -93,8 +94,6 @@ def set_parameters(distribution):
     Set the parameter labels for the selected distribution. Additionally,
     disable 2nd parameter slider if the distribution doesn't require it.
     """
-    if distribution is None:
-        distribution = "Normal"
     dist = dist_data[distribution]
     param1_name, param2_name = dist['param1'], dist['param2']
     num_params = dist['num_params']
@@ -134,9 +133,6 @@ def display_current_params(nam1, val1, nam2, val2, n):
               [Input('select-distribution', 'value')])
 def show_description(distribution):
     """Display selected distribution's summary information."""
-    if distribution is None:
-        distribution = "Normal"
-
     return ([html.H3(f'Current selection: {distribution} Distribution')]
             + [html.P(desc)
                for desc in [dist_data[distribution]['summary'].split('>')]
