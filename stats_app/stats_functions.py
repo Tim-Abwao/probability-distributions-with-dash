@@ -36,11 +36,13 @@ def get_random_sample(distribution, size, parameters):
     Get a sample of the specified distribution with given size and parameters.
     """
     if distribution in {"Bernoulli", "Geometric"}:
+        # omit param2 slider value of N/A
         parameters = parameters[:-1]
 
     if distribution in {"Negative Binomial", "Binomial", "Geometric",
-                        "Bernoulli"}:
+                        "Bernoulli"}:  # probabilistic distributions
         parameters = validate_prob(parameters)
+
     return distributions[distribution].rvs(*parameters, size=size)
 
 

@@ -3,10 +3,11 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
 from dash.dependencies import Input, Output
-from stats_functions import descriptive_stats, get_random_sample
+from stats_app import stats_functions as sf
 import json
 
-with open('distributions.json') as file:
+
+with open('stats_app/distributions.json') as file:
     dist_data = json.load(file)
 
 param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]  # for parameter sliders
@@ -19,7 +20,8 @@ app = dash.Dash(
                 'content': 'width=device-width, initial-scale=1.0'}]
 )
 
-server = app.server
+server = app.server  # interface for gunicorn
+
 
 app.layout = html.Div([
     # Top level heading
@@ -29,54 +31,57 @@ app.layout = html.Div([
     This simple dashboard let's you try various statistical distributions,
     set parameters, and see their effect in real time.
     """]),
-    html.Div([
-        # Selected distribution's description
-        html.Div(id='description', className='description'),
 
-        # Distribution and parameter selection
-        html.Div(id='parameters', children=[
-            # Distribution drop-down menu
-            html.Label("Statistical distribution:", className='param-label',
-                       htmlFor='select-distribution'),
-            dcc.Dropdown(id='select-distribution', value='Normal',
-                         options=[{'label': dist, 'value': dist}
-                                  for dist in dist_data]),
-            # Parameter 1 slider
-            html.Label(id='param1name', className='param-label',
-                       htmlFor='parameter1'),
-            dcc.Slider(id='parameter1', included=False, min=0.05, max=10,
-                       step=0.01, value=5, tooltip={'placement': 'top'},
-                       marks={i: {'label': f'{i}'} for i in param_ticks}),
+    # Dashboard components
+    html.Div(className='content', children=[
 
-            # Parameter 2 slider
-            html.Label(id='param2name', className='param-label',
-                       htmlFor='parameter2'),
-            dcc.Slider(id='parameter2', included=False, min=0.05, max=10,
-                       step=0.01, value=5, tooltip={'placement': 'top'},
-                       marks={i: {'label': f'{i}'} for i in param_ticks}),
+        html.Div(className='parameters', children=[
+            # Current distribution's description
+            html.Div(id='description', className='description'),
 
-            # Sample size slider
-            html.Label("Sample size (n):", className='param-label',
-                       htmlFor='sample-size'),
-            dcc.Slider(id='sample-size', min=10, max=300, value=100,
-                       step=10, included=False, tooltip={'placement': 'top'},
-                       marks={i: {'label': f'{i}'}
-                              for i in range(0, 500, 50)})
+            # Distribution menu and parameter sliders
+            html.Div(id='parameters', children=[
+                # Distribution drop-down menu
+                html.Label("Statistical distribution:",
+                           className='param-label',
+                           htmlFor='select-distribution'),
+                dcc.Dropdown(id='select-distribution', value='Normal',
+                             options=[{'label': dist, 'value': dist}
+                                      for dist in dist_data]),
+
+                # Parameter 1 slider
+                html.Label(id='param1name', className='param-label',
+                           htmlFor='parameter1'),
+                dcc.Slider(id='parameter1', included=False, min=0.05, max=10,
+                           step=0.01, value=5, tooltip={'placement': 'top'},
+                           marks={i: {'label': f'{i}'} for i in param_ticks}),
+
+                # Parameter 2 slider
+                html.Label(id='param2name', className='param-label',
+                           htmlFor='parameter2'),
+                dcc.Slider(id='parameter2', included=False, min=0.05, max=10,
+                           step=0.01, value=5, tooltip={'placement': 'top'},
+                           marks={i: {'label': f'{i}'} for i in param_ticks}),
+
+                # Sample size slider
+                html.Label("Sample size (n):", className='param-label',
+                           htmlFor='sample-size'),
+                dcc.Slider(id='sample-size', min=10, max=300, value=100,
+                           step=10, included=False,
+                           tooltip={'placement': 'top'},
+                           marks={i: {'label': f'{i}'}
+                                  for i in range(0, 500, 50)})
+                ]),
             ]),
 
-        # Summary-statistics table
-        html.Div([html.Table(id='summary-stats'),
-                  html.P(id='current-params')], className='stats'),
-        ], className='parameters'),
+        # Histogram
+        html.Div(className='graphics', children=[
+            dcc.Graph(id='histogram')]),
 
-    # Container for the graphs
-    html.Div([
-        html.Div(dcc.Graph(id='histogram',
-                           config={'displayModeBar': False})),
-        html.Div(dcc.Graph(id='violinplot',
-                           config={'displayModeBar': False})),
-    ], className='graphics')
-])
+        # Summary statistics table
+        html.Div([html.Table(id='summary-stats'),
+                 html.P(id='current-params')], className='stats')
+    ])])
 
 
 @app.callback([Output('param1name', 'children'),
@@ -131,6 +136,7 @@ def show_description(distribution):
     """Display selected distribution's summary information."""
     if distribution is None:
         distribution = "Normal"
+
     return ([html.H3(f'Current selection: {distribution} Distribution')]
             + [html.P(desc)
                for desc in [dist_data[distribution]['summary'].split('>')]
@@ -139,7 +145,6 @@ def show_description(distribution):
 
 
 @app.callback([Output('histogram', 'figure'),
-               Output('violinplot', 'figure'),
                Output('summary-stats', 'children')],
               [Input('select-distribution', 'value'),
                Input('sample-size', 'value'),
@@ -152,27 +157,24 @@ def process_sample(distribution, size, *parameters):
     """
     if distribution is None:
         distribution = "Normal"
-    sample = get_random_sample(distribution, size, parameters)
 
-    fig1 = px.histogram(x=sample, opacity=0.9, template='plotly_dark',
-                        color_discrete_sequence=['cyan'],
-                        title=f'{distribution} Sample Histogram')
-    fig1.update_xaxes(fixedrange=True, title='Values')
-    fig1.update_yaxes(fixedrange=True, title='Frequency')
-    fig1.update_layout({'plot_bgcolor': '#333', 'paper_bgcolor': '#333'})
+    sample = sf.get_random_sample(distribution, size, parameters)
 
-    fig2 = px.violin(x=sample, box=True, color_discrete_sequence=['cyan'],
-                     title=f'{distribution} Sample Violin Plot',
-                     template='plotly_dark')
-    fig2.update_xaxes(fixedrange=True, title='Values')
-    fig2.update_yaxes(fixedrange=True)
-    fig2.update_layout({'plot_bgcolor': '#333', 'paper_bgcolor': '#333'})
+    fig = px.histogram(x=sample, opacity=0.9, template='plotly_dark',
+                       color_discrete_sequence=['cyan'], marginal='box',
+                       height=550, nbins=25,
+                       title=f'{distribution} Sample Histogram')
+    fig.update_xaxes(fixedrange=True, title='Values')
+    fig.update_yaxes(fixedrange=True, title='Frequency')
+    fig.update_layout({'plot_bgcolor': '#205050', 'paper_bgcolor': '#205050'})
 
-    sample_stats = ([html.Th('Summary Statistics')]
-                    + [html.Tr([html.Td(f'{name}:'), html.Td(value)])
-                       for name, value in descriptive_stats(sample).items()])
+    sample_stats = (
+        [html.Th('Summary Statistics')]
+        + [html.Tr([html.Td(f'{name}:'), html.Td(value)])
+           for name, value in sf.descriptive_stats(sample).items()]
+    )
 
-    return fig1, fig2, sample_stats
+    return fig, sample_stats
 
 
 if __name__ == '__main__':

@@ -1,0 +1,89 @@
+body {
+    margin: 5% 2%;
+    color: #ccc;
+    background-color: rgb(20, 60, 60);
+}
+
+table, td {
+    width: 100%;
+}
+
+tr:nth-child(even) {
+    background-color: cyan;
+    color: darkslategray;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 30% 46% 20%;
+    gap: 2%
+}
+
+.stats {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.description p {
+    font-style: oblique;
+    color: #333;
+    background-color: aqua;
+    padding: 4%;
+    border-radius: 2%;
+}
+
+@media screen and (max-width: 1024px) {
+    .content {
+        display: grid;
+        grid-template-columns: 37% 60%;
+        grid-template-rows: repeat(2, minmax(300px, auto));
+        gap: 3%;
+    }
+}
+
+@media screen and (max-width: 760px) {
+    body {
+        margin: 5%;
+    }
+    .content {
+        display: block;
+    }
+    .parameters, .stats, .graphics {
+        margin-bottom: 7%;
+    }
+}
+
+.wiki-link {
+    color: darkslategray;
+}
+
+.wiki-link:hover {
+    color: rgb(223, 255, 255);
+}
+
+.Select {
+    color: #eee;
+}
+
+.Select-control {
+    background-color: #205050;
+    border-radius: 4px;
+    border: 1px solid cyan;
+}
+
+.is-open>.Select-control {
+    background: #205050;
+    border-color: cyan;
+}
+
+.is-focused:not(.is-open)>.Select-control {
+    border-color: cyan;
+}
+
+.Select-menu-outer {
+    background-color: #205050;
+    border: 1px solid cyan;
+}
+
+.Select-value-label {
+    color: aqua !important;
+}
