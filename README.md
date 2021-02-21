@@ -22,8 +22,10 @@ To run it locally,
     ```bash
     pip install --upgrade pip
     pip install -r requirements.txt
-    gunicorn stats_app:server
+    gunicorn -w 4 stats_app:server
     ```
+
+    Then browse to <http://127.0.0.1:8000>.
 
     For *Windows* users, consider using [waitress][4] instead:
 
