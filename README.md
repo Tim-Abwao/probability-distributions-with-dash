@@ -1,4 +1,4 @@
-# Statistical Distributions Dashboard
+# Statistical Distributions Sampler
 
 A simple web app to help explore some of the most common statistical distributions. Made with [SciPy][1], powered by [Dash][2].
 
@@ -22,19 +22,9 @@ To run it locally,
     ```bash
     pip install --upgrade pip
     pip install -r requirements.txt
-    gunicorn -w 4 stats_app:server
-    ```
-
-    Then browse to <http://127.0.0.1:8000>.
-
-    For *Windows* users, consider using [waitress][4] instead:
-
-    ```bash
-    pip install waitress
     waitress-serve stats_app:server
     ```
 
 [1]: https://www.scipy.org/
 [2]: https://dash.plotly.com/
 [3]: https://statistics-distributions.herokuapp.com/
-[4]: https://docs.pylonsproject.org/projects/waitress/en/stable/
