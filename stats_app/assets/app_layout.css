@@ -1,7 +1,15 @@
 body {
-    margin: 5% 2%;
+    margin: 2%;
     color: #ccc;
     background-color: rgb(20, 60, 60);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 30% 46% 20%;
+    gap: 2%
 }
 
 table, td {
@@ -13,22 +21,29 @@ tr:nth-child(even) {
     color: darkslategray;
 }
 
-.content {
-    display: grid;
-    grid-template-columns: 30% 46% 20%;
-    gap: 2%
-}
-
-.stats {
-    font-family: 'Courier New', Courier, monospace;
-}
-
-.description p {
+.description {
     font-style: oblique;
     color: #333;
     background-color: aqua;
-    padding: 4%;
+    padding: 2%;
     border-radius: 2%;
+    margin-bottom: 4%;
+}
+
+.description p {
+    margin: 2%;
+}
+
+.wiki-link {
+    color: rgb(6, 126, 106);
+}
+
+.wiki-link:hover {
+    color: #fff;
+}
+
+.param-label {
+    font-weight: bold;
 }
 
 @media screen and (max-width: 1024px) {
@@ -47,17 +62,9 @@ tr:nth-child(even) {
     .content {
         display: block;
     }
-    .parameters, .stats, .graphics {
+    .side-bar, .stats-table, .graph-container {
         margin-bottom: 7%;
     }
-}
-
-.wiki-link {
-    color: darkslategray;
-}
-
-.wiki-link:hover {
-    color: rgb(223, 255, 255);
 }
 
 .Select {
