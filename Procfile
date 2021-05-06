@@ -1,1 +1,1 @@
-web: gunicorn -w 4 stats_app:server
+web: waitress-serve --port=$PORT stats_app:server
