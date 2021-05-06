@@ -1,14 +1,16 @@
+import json
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
 from dash.dependencies import Input, Output
-from stats_app import stats_functions as sf
-import json
+
+from stats_app import stats_functions
 
 
 with open('stats_app/distributions.json') as file:
-    dist_data = json.load(file)
+    distribution_data = json.load(file)
 
 param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]  # for parameter sliders
 
@@ -22,153 +24,220 @@ app = dash.Dash(
 
 
 app.layout = html.Div([
-    # Top level heading
-    dcc.Markdown(["""
-    # Statistical Distribution Sampler
-
-    This simple dashboard let's you try various statistical distributions,
-    set parameters, and see their effect in real time.
-    """]),
+    # Title
+    html.H1('Statistical Distribution Sampler'),
 
     # Dashboard components
     html.Div(className='content', children=[
-
-        html.Div(className='parameters', children=[
-            # Current distribution's description
-            html.Div(id='description', className='description'),
-
-            # Distribution menu and parameter sliders
-            html.Div(id='parameters', children=[
-                # Distribution drop-down menu
-                html.Label("Statistical distribution:",
-                           className='param-label',
-                           htmlFor='select-distribution'),
-                dcc.Dropdown(id='select-distribution', value='Normal',
-                             searchable=False, clearable=False,
-                             options=[{'label': dist, 'value': dist}
-                                      for dist in dist_data]),
-
-                # Parameter 1 slider
-                html.Label(id='param1name', className='param-label',
-                           htmlFor='parameter1'),
-                dcc.Slider(id='parameter1', included=False, min=0.05, max=10,
-                           step=0.01, value=5, tooltip={'placement': 'top'},
-                           marks={i: {'label': f'{i}'} for i in param_ticks}),
-
-                # Parameter 2 slider
-                html.Label(id='param2name', className='param-label',
-                           htmlFor='parameter2'),
-                dcc.Slider(id='parameter2', included=False, min=0.05, max=10,
-                           step=0.01, value=5, tooltip={'placement': 'top'},
-                           marks={i: {'label': f'{i}'} for i in param_ticks}),
-
-                # Sample size slider
-                html.Label("Sample size (n):", className='param-label',
-                           htmlFor='sample-size'),
-                dcc.Slider(id='sample-size', min=10, max=300, value=100,
-                           step=10, included=False,
-                           tooltip={'placement': 'top'},
-                           marks={i: {'label': f'{i}'}
-                                  for i in range(0, 500, 50)})
-                ]),
+        # Side-bar with distribution info and parameter-setters
+        html.Div(className='side-bar', children=[
+            # Distribution description
+            html.H3(id='distribution-name'),
+            html.Div(className='description', id='description'),
+            # Distribution selector
+            html.Div([
+                html.Label(
+                    "Statistical distribution:", className='param-label',
+                    htmlFor='current-distribution'
+                ),
+                dcc.Dropdown(
+                    id='current-distribution', value='Normal', clearable=False,
+                    searchable=False,
+                    options=[
+                        {'label': dist, 'value': dist}
+                        for dist in distribution_data
+                    ]
+                ),
+            ]),
+            # Container for parameter slider(s)
+            html.Div(id='distribution-param-sliders', children=[
+                dcc.Slider(id='parameter1'),
+                dcc.Slider(id='parameter2')
             ]),
 
-        # Histogram
-        html.Div(className='graphics', children=[
-            dcc.Graph(id='histogram')]),
+            # Sample size slider
+            html.Div(id='sample-size-slider', children=[
+                html.Label(
+                    "Sample size (n):", className='param-label',
+                    htmlFor='sample-size'
+                ),
+                dcc.Slider(
+                    id='sample-size', min=10, max=300, value=100, step=10,
+                    included=False, tooltip={'placement': 'top'},
+                    marks={i: {'label': f'{i}'} for i in range(0, 500, 50)}
+                )
+            ]),
+        ]),
+
+        # Graph (histogram + marginal boxplot)
+        dcc.Loading(
+            color='cyan',
+            children=[
+                html.Div(className='graph-container', children=[
+                    dcc.Graph(id='histogram')])
+            ]
+        ),
 
         # Summary statistics table
-        html.Div([html.Table(id='summary-stats'),
-                 html.P(id='current-params')], className='stats')
-    ])])
+        html.Div(className='stats-table', children=[
+            html.Table(id='summary-stats'),
+            html.Div(id='current-params'),
+        ])
+    ])
+])
 
 
-@app.callback([Output('param1name', 'children'),
-               Output('param2name', 'children'),
-               Output('parameter2', 'disabled')],
-              [Input('select-distribution', 'value')])
-def set_parameters(distribution):
+@app.callback(Output('distribution-param-sliders', 'children'),
+              Input('current-distribution', 'value'))
+def create_parameter_sliders(distribution):
     """
-    Set the parameter labels for the selected distribution. Additionally,
-    disable 2nd parameter slider if the distribution doesn't require it.
-    """
-    dist = dist_data[distribution]
-    param1_name, param2_name = dist['param1'], dist['param2']
-    num_params = dist['num_params']
-    omit_param2 = True if num_params < 2 else False
-    return param1_name, param2_name, omit_param2
+    Set the parameter labels and sliders for parameters of the selected
+    distribution.
 
+    Parameters
+    ----------
+    distribution : str
+        The name of the currently selected distribution.
 
-@app.callback([Output('parameter1', 'max'),
-               Output('parameter2', 'max')],
-              [Input('param1name', 'children'),
-               Input('param2name', 'children')])
-def scale_probability_slider(*param_names):
+    Returns
+    -------
+    A tuple with the labelled parameter slider components.
     """
-    Rescale a parameter slider to the range [0, 1] if it is a probability.
-    """
-    maximum = [1 if 'Prob' in name else 10 for name in param_names]
-    return maximum
+    selected_dist = distribution_data[distribution]
+    num_params = selected_dist['num_params']
+
+    param_sliders = [(
+        html.Label(
+            selected_dist[f'param{idx}'] + ':',
+            id=f'param{idx}_name', className='param-label',
+            htmlFor=f'parameter{idx}'
+         ),
+        dcc.Slider(
+            id=f'parameter{idx}', min=0.05,
+            max=selected_dist[f'param{idx}_max'], step=0.01,
+            value=selected_dist[f'param{idx}_max'] / 2,
+            tooltip={'placement': 'top'},
+            marks={i: {'label': f'{i}'} for i in param_ticks}
+        ),
+    ) for idx in range(1, num_params + 1)]
+
+    if num_params < 2:
+        # Ensure a component with id 'parameter2' exists, since it is expected
+        # in other callbacks.
+        param_sliders.append(
+            (dcc.Input(id='parameter2', value=None, type='hidden'),)
+        )
+    return sum(param_sliders, start=())  # Concatenate the slider pair
 
 
 @app.callback(Output('current-params', 'children'),
-              [Input('param1name', 'children'),
+              [Input('current-distribution', 'value'),
+               Input('sample-size', 'value'),
                Input('parameter1', 'value'),
-               Input('param2name', 'children'),
-               Input('parameter2', 'value'),
-               Input('sample-size', 'value')])
-def display_current_params(nam1, val1, nam2, val2, n):
-    """Display the current parameters as name:value pairs."""
-    if nam2 == 'N/A':
-        nam2_val2 = ''
-    else:
-        nam2_val2 = f' {nam2}: {val2},'
-    return [html.B('Parameters: '),
-            f'{nam1}: {val1},{nam2_val2} Sample size: {n}']
+               Input('parameter2', 'value')])
+def display_current_params(distribution, size, *params):
+    """Display the current parameter values.
+
+    Parameters
+    ----------
+    distribution : str
+        The name of the currently selected distribution
+    size : int
+        The set sample size
+    params : int, floaf
+        Parameter values
+
+    Returns
+    -------
+    A string with comma-separated 'param':'value' pairs.
+    """
+    current_distribution = distribution_data[distribution]
+
+    # Get parameter names and values
+    param_dict = {
+        current_distribution.get(f'param{idx}'): value
+        for idx, value in enumerate(params, 1) if value is not None
+    }
+    param_dict['Sample Size'] = size
+
+    return [
+        html.H3('Parameters: '),
+        html.P([
+            ', '.join([f'{key}: {value}' for key, value in param_dict.items()])
+        ])
+    ]
 
 
-@app.callback(Output('description', 'children'),
-              [Input('select-distribution', 'value')])
+@app.callback([Output('distribution-name', 'children'),
+               Output('description', 'children')],
+              [Input('current-distribution', 'value')])
 def show_description(distribution):
-    """Display selected distribution's summary information."""
-    return ([html.H3(f'Current selection: {distribution} Distribution')]
-            + [html.P(desc)
-               for desc in [dist_data[distribution]['summary'].split('>')]
-            + [html.A('Learn more...', className='wiki-link',
-               href=dist_data[distribution]['wiki_link'])]])
+    """Display a brief summary of the selected distribution's characteristics.
+
+    Parameters
+    ----------
+    distribution : str
+        The name of the current distribution
+
+    Returns
+    -------
+    The distribution's name, a brief summary, and a link to Wikipedia for more
+    information.
+    """
+    title = f'Current selection: {distribution} Distribution'
+    text = [
+        html.P(desc)
+        for desc in distribution_data[distribution]['summary'].split('>')
+    ]
+    wiki_link = [html.A('Learn more...', className='wiki-link',
+                 href=distribution_data[distribution]['wiki_link'])]
+    return title, text + wiki_link
 
 
 @app.callback([Output('histogram', 'figure'),
                Output('summary-stats', 'children')],
-              [Input('select-distribution', 'value'),
+              [Input('current-distribution', 'value'),
                Input('sample-size', 'value'),
                Input('parameter1', 'value'),
                Input('parameter2', 'value')])
-def process_sample(distribution, size, *parameters):
+def create_and_plot_sample(distribution, size, *parameters):
     """
-    Create a sample of the selected distribution with specified parameters,
-    plot a histogram & a violin plot, then compute descriptive statistics.
+    Create a sample of the selected distribution, using the set parameters,
+    then plot a histogram & box-plot. Also, compute descriptive statistics for
+    the generated sample.
+
+    Parameters
+    ----------
+    distribution : str
+        The name of the currently selected distribution
+    size : int
+        The set sample size
+    parameters : int, floaf
+        Parameter values
+
+    Returns
+    -------
+    A plotted figure and a table of summary statistics.
     """
-    if distribution is None:
-        distribution = "Normal"
+    sample = stats_functions.get_random_sample(distribution, size, parameters)
 
-    sample = sf.get_random_sample(distribution, size, parameters)
-
-    fig = px.histogram(x=sample, opacity=0.9, template='plotly_dark',
-                       color_discrete_sequence=['cyan'], marginal='box',
-                       height=550, nbins=25,
-                       title=f'{distribution} Sample Histogram')
+    fig = px.histogram(
+        x=sample, nbins=50, opacity=0.9, template='plotly_dark',
+        color_discrete_sequence=['cyan'], marginal='box', height=550,
+        title=f'{distribution} Sample Histogram'
+    )
     fig.update_xaxes(fixedrange=True, title='Values')
     fig.update_yaxes(fixedrange=True, title='Frequency')
-    fig.update_layout({'plot_bgcolor': '#205050', 'paper_bgcolor': '#205050'})
+    fig.update_layout(plot_bgcolor='#205050', paper_bgcolor='#205050',
+                      font_family="Courier New",)
 
-    sample_stats = (
+    summary_statistics_table = (
         [html.Th('Summary Statistics')]
         + [html.Tr([html.Td(f'{name}:'), html.Td(value)])
-           for name, value in sf.descriptive_stats(sample).items()]
+           for name, value in stats_functions.summary_stats(sample).items()]
     )
 
-    return fig, sample_stats
+    return fig, summary_statistics_table
 
 
 if __name__ == '__main__':
