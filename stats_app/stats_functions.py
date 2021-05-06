@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import stats
 
+
 distributions = {
     "Normal": stats.norm,
     "Poisson": stats.poisson,
@@ -20,35 +21,50 @@ distributions = {
 }
 
 
-def validate_prob(params):
-    """
-    Ensure that probabilities are in the range 0 <= p <= 1, or else assign
-    a default value of 0.5 to p.
-    """
-    # Probability (p) is the last value
-    if len(params) < 2 and not 0 <= params[-1] <= 1:
-        return (0.5,)
-    return params if 0 <= params[-1] <= 1 else params[:-1] + (0.5,)
-
-
 def get_random_sample(distribution, size, parameters):
+    """Generate a sample with the specified probability distribution, using
+    the given parameters.
+
+    Parameters
+    ----------
+    distribution : str
+        The name of the distribution
+    size : int
+        The desired sample size
+    parameters : int, float
+        Parameter values
+
+    Returns
+    -------
+    The specified sample as a numpy array.
     """
-    Get a sample of the specified distribution with given size and parameters.
-    """
-    if distribution in {"Bernoulli", "Geometric"}:
-        # omit param2 slider value of N/A
-        parameters = parameters[:-1]
+    parameters = [param for param in parameters if param is not None]
 
-    if distribution in {"Negative Binomial", "Binomial", "Geometric",
-                        "Bernoulli"}:  # probabilistic distributions
-        parameters = validate_prob(parameters)
+    try:
+        # Get a sample with the set parameters
+        sample = distributions[distribution].rvs(*parameters, size=size)
+    except (ValueError, TypeError):
+        # Missing positional args cause a TypeError('_parse_args_rvs() missing
+        # 1 required positional argument').
+        # Invalid args raise a ValueError('Domain error in arguments').
 
-    return distributions[distribution].rvs(*parameters, size=size)
+        # Get a sample with default paramerters
+        sample = distributions[distribution].rvs(1, 1, size=size)
+
+    return sample
 
 
-def descriptive_stats(data):
-    """
-    Get basic descriptive statistics for the given data.
+def summary_stats(data):
+    """Get basic descriptive statistics for the given data.
+
+    Parameters
+    ----------
+    data : array-like
+        An array of numerical values.
+
+    Returns
+    -------
+    A dictionary of various summary statistics.
     """
     q1, q2, q3 = np.quantile(data, [0.25, 0.5, 0.75])
     _stats = {'Count': len(data),
