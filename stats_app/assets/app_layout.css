@@ -14,6 +14,7 @@ body {
 
 table, td {
     width: 100%;
+    font-weight: 500;
 }
 
 tr:nth-child(even) {
@@ -23,6 +24,7 @@ tr:nth-child(even) {
 
 .description {
     font-style: oblique;
+    font-weight: 500;
     color: #333;
     background-color: aqua;
     padding: 2%;
