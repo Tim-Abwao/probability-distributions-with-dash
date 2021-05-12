@@ -1,6 +1,6 @@
-# Statistical Distributions Sampler
+# Probability Distribution Sampler
 
-A simple web app to help explore some of the most common statistical distributions. Made with [SciPy][1], powered by [Dash][2].
+A dashboard to help explore some of the most common statistical distributions. Made with [SciPy][1], powered by [Dash][2].
 
 You can [try it out here][3].
 
@@ -11,8 +11,8 @@ To run it locally,
 1. Download the files, and create a virtual environment:
 
     ```bash
-    git clone https://github.com/Tim-Abwao/statistical-distributions-dash.git
-    cd statistical-distributions-dash
+    git clone https://github.com/Tim-Abwao/probability-distributions-with-dash.git
+    cd probability-distributions-with-dash
     python3 -m venv venv
     source venv/bin/activate
     ```
