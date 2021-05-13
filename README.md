@@ -22,7 +22,7 @@ To run it locally,
     ```bash
     pip install --upgrade pip
     pip install -r requirements.txt
-    waitress-serve stats_app:server
+    waitress-serve distributions_dashboard:server
     ```
 
 [1]: https://www.scipy.org/

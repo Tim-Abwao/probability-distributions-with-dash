@@ -6,17 +6,17 @@ import dash_html_components as html
 import plotly.express as px
 from dash.dependencies import Input, Output
 
-from stats_app.utils import process_random_sample
+from distributions_dashboard.utils import process_random_sample
 
-with open("stats_app/distributions.json") as file:
+with open("distributions_dashboard/distributions.json") as file:
     distribution_data = json.load(file)
 
 param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]  # for parameter sliders
 
 
 app = dash.Dash(
-    "stats_app",
-    title="Statistical Distributions Sampler",
+    "distributions_dashboard",
+    title="Probability Distributions Sampler",
     meta_tags=[
         {
             "name": "viewport",
