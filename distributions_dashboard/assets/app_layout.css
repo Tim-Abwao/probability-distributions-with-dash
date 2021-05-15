@@ -12,6 +12,22 @@ body {
     gap: 2%
 }
 
+.custom-button {
+    line-height: 3;
+    background-color: aqua;
+    padding: 0 5%;
+    border: none;
+    border-radius: 4px;
+    margin: 5% auto;
+    position: center;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.custom-button:hover {
+    background-color: #205050;
+    color: #eee;
+}
+
 table, td {
     width: 100%;
     font-weight: 500;

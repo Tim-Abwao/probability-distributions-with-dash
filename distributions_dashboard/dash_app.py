@@ -4,7 +4,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 
 from distributions_dashboard.utils import process_random_sample
 
@@ -111,8 +111,17 @@ app.layout = html.Div(
                     children=[
                         html.Table(id="summary-stats"),
                         html.Div(id="current-params"),
+                        html.Button(
+                            "Download sample",
+                            id="sample-download-button",
+                            className="custom-button",
+                        ),
                     ],
                 ),
+                # Sample data storage
+                dcc.Store(id="sample-store"),
+                # Sample download component
+                dcc.Download(id="download-sample"),
             ],
         ),
     ]
@@ -209,6 +218,7 @@ def show_distribution_info(distribution):
         Output("histogram", "figure"),
         Output("summary-stats", "children"),
         Output("current-params", "children"),
+        Output("sample-store", "data"),
     ],
     [
         Input("current-distribution", "value"),
@@ -251,7 +261,7 @@ def create_and_plot_sample(distribution, size, *parameters):
         template="plotly_dark",
         color_discrete_sequence=["cyan"],
         height=550,
-        title=f"{distribution} Sample",
+        title=f"{distribution} Distribution Sample",
     )
     fig.update_xaxes(fixedrange=True, title="Values")
     fig.update_yaxes(fixedrange=True, title="Frequency")
@@ -286,7 +296,38 @@ def create_and_plot_sample(distribution, size, *parameters):
         ),
     ]
 
-    return fig, summary_statistics_table, parameter_info
+    sample_csv_download = {
+        "content": data.to_csv(index=False),
+        "filename": f"{distribution}-sample.csv",
+        "type": "text/csv",
+    }
+    return fig, summary_statistics_table, parameter_info, sample_csv_download
+
+
+@app.callback(
+    Output("download-sample", "data"),
+    Input("sample-download-button", "n_clicks"),
+    State("sample-store", "data"),
+)
+def download_sample(clicks, data):
+    """Retrieve the current sample data for download whenever a user clicks on
+    the sample download button.
+
+    Parameters
+    ----------
+    clicks : int
+        The number of clicks of the download button.
+    data : dict
+        A dictionary with the sample data.
+
+    Returns
+    -------
+    A dictionary of the current sample's data and metadata for download.
+    """
+    if clicks == 0:
+        return dict(content='', filename='', type='text/plain')
+    else:
+        return data
 
 
 if __name__ == "__main__":

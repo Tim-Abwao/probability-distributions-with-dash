@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from scipy import stats
 
 distribution_functions = {
@@ -101,8 +102,10 @@ def process_random_sample(distribution, size, parameters):
     # Validate parameters
     parameters = process_parameters(distribution, parameters)
     # Get a random sample
-    sample = distribution_functions[distribution].rvs(*parameters, size=size)
-
+    sample = pd.Series(
+        distribution_functions[distribution].rvs(*parameters, size=size),
+        name=f"{distribution}-sample",
+    )
     return {
         "data": sample,
         "parameters": parameters,
