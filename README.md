@@ -27,4 +27,4 @@ To run it locally,
 
 [1]: https://www.scipy.org/
 [2]: https://dash.plotly.com/
-[3]: https://statistics-distributions.herokuapp.com/
+[3]: https://probability-distributions.herokuapp.com/
