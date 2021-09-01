@@ -1,31 +1,15 @@
 body {
-    margin: 2%;
+    margin: 5%;
     color: #ccc;
     background-color: rgb(20, 60, 60);
     font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9em;
+    font-size: 0.8em;
 }
 
-.content {
-    display: grid;
-    grid-template-columns: 30% 46% 20%;
-    gap: 2%
-}
-
-.custom-button {
-    line-height: 3;
-    background-color: aqua;
-    padding: 0 5%;
-    border: none;
-    border-radius: 4px;
-    margin: 5% auto;
-    position: center;
-    font-family: 'Courier New', Courier, monospace;
-}
-
-.custom-button:hover {
-    background-color: #205050;
-    color: #eee;
+label {
+    font-weight: bold;
+    display: inline-block;
+    margin: 15px 5px 5px;
 }
 
 table, td {
@@ -38,8 +22,24 @@ tr:nth-child(even) {
     color: darkslategray;
 }
 
+.custom-button {
+    display: block;
+    line-height: 3;
+    background-color: aqua;
+    padding: 0% 5%;
+    border: none;
+    border-radius: 4px;
+    margin: 5% auto;
+    position: center;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.custom-button:hover {
+    background-color: #205050;
+    color: #eee;
+}
+
 .description {
-    font-style: oblique;
     font-weight: 500;
     color: #333;
     background-color: aqua;
@@ -60,31 +60,11 @@ tr:nth-child(even) {
     color: #fff;
 }
 
-.param-label {
-    font-weight: bold;
+.statistics-and-plots #histogram, #violin-plot, #stats-table {
+    margin-bottom: 4%;   
 }
 
-@media screen and (max-width: 1024px) {
-    .content {
-        display: grid;
-        grid-template-columns: 37% 60%;
-        grid-template-rows: repeat(2, minmax(300px, auto));
-        gap: 3%;
-    }
-}
-
-@media screen and (max-width: 760px) {
-    body {
-        margin: 5%;
-    }
-    .content {
-        display: block;
-    }
-    .side-bar, .stats-table, .graph-container {
-        margin-bottom: 7%;
-    }
-}
-
+/* Classes defined in dash */
 .Select {
     color: #eee;
 }
@@ -111,4 +91,29 @@ tr:nth-child(even) {
 
 .Select-value-label {
     color: aqua !important;
+}
+
+@media only screen and (min-width: 768px) {
+    body {
+        margin: 10%;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    body {
+        margin: 2%;
+    }
+
+    .content {
+        display: grid;
+        grid-template-columns: 25% 73%;
+        gap: 2%;
+    }
+
+    .statistics-and-plots {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 325px auto;
+        gap: 20px;
+    }
 }
