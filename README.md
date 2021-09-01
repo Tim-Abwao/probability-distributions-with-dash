@@ -1,12 +1,12 @@
 # Probability Distribution Sampler
 
-A dashboard to help explore some of the most common statistical distributions. Made with [SciPy][1], powered by [Dash][2].
+A dashboard to help explore some of the most common probability distributions. Powered by [Dash][1].
 
-You can [try it out here][3].
+You can [try it out here][2].
 
-[![screen capture](screen.gif)][3]
+[![screen capture](screen.gif)][2]
 
-To run it locally,
+## Run locally
 
 1. Download the files, and create a virtual environment:
 
@@ -25,6 +25,5 @@ To run it locally,
     waitress-serve distributions_dashboard:server
     ```
 
-[1]: https://www.scipy.org/
-[2]: https://dash.plotly.com/
-[3]: https://probability-distributions.herokuapp.com/
+[1]: https://dash.plotly.com/
+[2]: https://probability-distributions.herokuapp.com/
