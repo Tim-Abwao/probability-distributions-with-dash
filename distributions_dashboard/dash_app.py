@@ -265,9 +265,10 @@ def create_and_plot_sample(distribution: str, size: int, *parameters) -> tuple:
     histogram.update_xaxes(fixedrange=True, title="Values")
     histogram.update_yaxes(fixedrange=True, title="Frequency")
     histogram.update_layout(
-        plot_bgcolor="#205050",
-        paper_bgcolor="#205050",
         font_family="Courier New",
+        paper_bgcolor="#205050",
+        plot_bgcolor="#205050",
+        title_font_size=14
     )
 
     violin_plot = px.violin(
@@ -282,9 +283,10 @@ def create_and_plot_sample(distribution: str, size: int, *parameters) -> tuple:
     violin_plot.update_xaxes(fixedrange=True, title="Values")
     violin_plot.update_yaxes(fixedrange=True)
     violin_plot.update_layout(
-        plot_bgcolor="#205050",
-        paper_bgcolor="#205050",
         font_family="Courier New",
+        paper_bgcolor="#205050",
+        plot_bgcolor="#205050",
+        title_font_size=14
     )
 
     parameters = sample["parameters"]
