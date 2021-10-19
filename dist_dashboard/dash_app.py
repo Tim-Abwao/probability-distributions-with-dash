@@ -1,21 +1,19 @@
 import json
 
-from dash import Dash
-import dash_core_components as dcc
-import dash_html_components as html
-import plotly.express as px
+from dash import Dash, dcc, html
 from dash.dependencies import Input, Output, State
 
-from distributions_dashboard.utils import process_random_sample
+from dist_dashboard import plotting
+from dist_dashboard.stats import process_random_sample
 
-with open("distributions_dashboard/distributions.json") as file:
+with open("dist_dashboard/distributions.json") as file:
     distribution_data = json.load(file)
 
 param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]  # for parameter sliders
-
+plot_config = {"displayModeBar": False}
 
 app = Dash(
-    name="distributions_dashboard",
+    name="dist_dashboard",
     title="Probability Distributions Sampler",
     meta_tags=[
         {
@@ -28,29 +26,32 @@ app = Dash(
 
 app.layout = html.Div(
     [
-        # Main title
         html.H1("Probability Distribution Sampler"),
-        # Dashboard content
         html.Div(
             className="content",
             children=[
-                # Side-bar
+                # Input & descriptions side-bar
                 html.Div(
                     className="side-bar",
                     children=[
                         # Distribution selector
-                        html.Label(
-                            "Select distribution:",
-                            htmlFor="current-distribution",
-                        ),
-                        dcc.Dropdown(
-                            id="current-distribution",
-                            value="Normal",
-                            clearable=False,
-                            searchable=False,
-                            options=[
-                                {"label": dist, "value": dist}
-                                for dist in distribution_data
+                        html.Div(
+                            id="distribution-menu",
+                            children=[
+                                html.Label(
+                                    "Select distribution:",
+                                    htmlFor="current-distribution",
+                                ),
+                                dcc.Dropdown(
+                                    id="current-distribution",
+                                    value="Normal",
+                                    clearable=False,
+                                    searchable=False,
+                                    options=[
+                                        {"label": dist, "value": dist}
+                                        for dist in distribution_data
+                                    ],
+                                ),
                             ],
                         ),
                         # Parameter slider(s)
@@ -84,43 +85,56 @@ app.layout = html.Div(
                                 ),
                             ],
                         ),
+                        # Parameter info
+                        html.Div(id="current-params"),
                         # Distribution description
-                        html.H3(id="distribution-name"),
                         html.Div(className="description", id="description"),
                     ],
                 ),
-                # Graphs & Summary statistics
+                # Histogram & violin-plot
                 html.Div(
-                    className="statistics-and-plots",
+                    className="histogram-and-violin",
                     children=[
                         # Histogram
                         dcc.Loading(
                             color="cyan",
-                            children=[html.Div(dcc.Graph(id="histogram"))],
+                            children=[
+                                dcc.Graph(id="histogram", config=plot_config)
+                            ],
                         ),
                         # Violin plot
                         dcc.Loading(
                             color="cyan",
-                            children=[html.Div(dcc.Graph(id="violin-plot"))],
+                            children=[
+                                dcc.Graph(id="violin-plot", config=plot_config)
+                            ],
+                        ),
+                    ],
+                ),
+                # ECDF-plot & summary statistics table
+                html.Div(
+                    className="ecdf-and-stats",
+                    children=[
+                        # ECDF plot
+                        dcc.Loading(
+                            color="cyan",
+                            children=[
+                                dcc.Graph(id="ecdf-plot", config=plot_config)
+                            ],
                         ),
                         # Summary statistics table
                         html.Div(
                             className="stats-table",
                             children=[html.Table(id="summary-stats")],
                         ),
-                        # Sample download button
-                        html.Div(
-                            [
-                                html.Div(id="current-params"),
-                                html.Button(
-                                    "Download sample",
-                                    id="sample-download-button",
-                                    className="custom-button",
-                                ),
-                                dcc.Download(id="download-sample"),
-                            ]
-                        ),
                         dcc.Store(id="sample-store"),
+                        # Sample download button
+                        html.Button(
+                            "Download sample",
+                            id="sample-download-button",
+                            className="custom-button",
+                        ),
+                        dcc.Download(id="download-sample"),
                     ],
                 ),
             ],
@@ -134,7 +148,7 @@ app.layout = html.Div(
     Input("current-distribution", "value"),
 )
 def create_parameter_sliders(distribution: str) -> tuple:
-    """Set the parameter labels and sliders for parameters of the selected
+    """Get the parameter label(s) & slider(s) for parameter(s) of the selected
     distribution.
 
     Parameters
@@ -147,22 +161,22 @@ def create_parameter_sliders(distribution: str) -> tuple:
     tuple
         Parameter label(s) and slider(s).
     """
-    distr_data = distribution_data[distribution]
-    num_params = distr_data["num_params"]
+    dist_data = distribution_data[distribution]
+    num_params = dist_data["num_params"]
 
     param_sliders = [
         (
             html.Label(
-                distr_data[f"param{idx}"] + ":",
+                dist_data[f"param{idx}"] + ":",
                 id=f"param{idx}_name",
                 htmlFor=f"parameter{idx}",
             ),
             dcc.Slider(
                 id=f"parameter{idx}",
                 min=0.05,
-                max=distr_data[f"param{idx}_max"],
+                max=dist_data[f"param{idx}_max"],
                 step=0.01,
-                value=distr_data[f"param{idx}_max"] / 2,
+                value=dist_data[f"param{idx}_max"] / 2,
                 tooltip={"placement": "top"},
                 marks={i: {"label": f"{i}"} for i in param_ticks},
             ),
@@ -180,14 +194,11 @@ def create_parameter_sliders(distribution: str) -> tuple:
 
 
 @app.callback(
-    [
-        Output("distribution-name", "children"),
-        Output("description", "children"),
-    ],
+    [Output("description", "children")],
     [Input("current-distribution", "value")],
 )
-def show_distribution_info(distribution: str) -> tuple:
-    """Display a brief summary of the selected distribution's characteristics.
+def show_distribution_info(distribution: str) -> list:
+    """Get a brief summary of the selected distribution.
 
     Parameters
     ----------
@@ -196,29 +207,29 @@ def show_distribution_info(distribution: str) -> tuple:
 
     Returns
     -------
-    tuple
-        The distribution name, a brief summary, and a link to Wikipedia for
-        more info.
+    list
+        A brief summary of the distribution, and a link to it's page on
+        Wikipedia.
     """
-    title = f"Current selection: {distribution} Distribution"
+    dist_data = distribution_data[distribution]
     summary = [
-        html.P(desc)
-        for desc in distribution_data[distribution]["summary"].split(">")
+        html.P(paragraph) for paragraph in dist_data["summary"].split(">")
     ]
     wiki_link = [
         html.A(
             "Learn more...",
             className="wiki-link",
-            href=distribution_data[distribution]["wiki_link"],
+            href=dist_data["wiki_link"],
         )
     ]
-    return title, summary + wiki_link
+    return [summary + wiki_link]
 
 
 @app.callback(
     [
         Output("histogram", "figure"),
         Output("violin-plot", "figure"),
+        Output("ecdf-plot", "figure"),
         Output("summary-stats", "children"),
         Output("current-params", "children"),
         Output("sample-store", "data"),
@@ -241,67 +252,34 @@ def create_and_plot_sample(distribution: str, size: int, *parameters) -> tuple:
         The name of the currently selected distribution
     size : int
         The set sample size
-    *parameters : int, floaf
+    *parameters : int, float
         1 or 2 parameter values, depending on the distribution
 
     Returns
     -------
     tuple
-        A histogram, a violin_plot, a table of summary statistics, the
-        currently specified parameters and a csv file with the sample data for
-        download.
+        A histogram, a violin_plot, an ecdf-plot, a table of summary
+        statistics, the currently specified parameters and a csv file with the
+        sample data for download.
     """
     sample = process_random_sample(distribution, size, parameters)
 
-    histogram = px.histogram(
-        x=sample["data"],
-        nbins=50,
-        height=320,
-        opacity=0.9,
-        template="plotly_dark",
-        color_discrete_sequence=["cyan"],
-        title=f"Histogram <i>({distribution} Distribution)</i>",
-    )
-    histogram.update_xaxes(fixedrange=True, title="Values")
-    histogram.update_yaxes(fixedrange=True, title="Frequency")
-    histogram.update_layout(
-        font_family="Courier New",
-        paper_bgcolor="#205050",
-        plot_bgcolor="#205050",
-        title_font_size=14
-    )
+    histogram = plotting.plot_histogram(sample["data"], distribution)
+    violin_plot = plotting.plot_violin(sample["data"], distribution)
+    ecdf_plot = plotting.plot_ecdf(sample["data"], distribution)
 
-    violin_plot = px.violin(
-        x=sample["data"],
-        box=True,
-        points="all",
-        height=320,
-        template="plotly_dark",
-        color_discrete_sequence=["cyan"],
-        title=f"Violin Plot <i>({distribution} Distribution)</i>",
-    )
-    violin_plot.update_xaxes(fixedrange=True, title="Values")
-    violin_plot.update_yaxes(fixedrange=True)
-    violin_plot.update_layout(
-        font_family="Courier New",
-        paper_bgcolor="#205050",
-        plot_bgcolor="#205050",
-        title_font_size=14
-    )
-
-    parameters = sample["parameters"]
     summary_statistics = sample["summary_statistics"]
     summary_statistics_table = [html.Th("Summary Statistics")] + [
         html.Tr([html.Td(f"{name}:"), html.Td(value)])
         for name, value in summary_statistics.items()
     ]
 
+    parameters = sample["parameters"]
     param_dict = {
         distribution_data[distribution].get(f"param{idx}"): value
         for idx, value in enumerate(parameters, start=1)
     }
     param_dict["Sample Size"] = size
-
     parameter_info = [
         html.H3("Parameters: "),
         html.P(
@@ -321,6 +299,7 @@ def create_and_plot_sample(distribution: str, size: int, *parameters) -> tuple:
     return (
         histogram,
         violin_plot,
+        ecdf_plot,
         summary_statistics_table,
         parameter_info,
         sample_csv_download,
@@ -352,7 +331,3 @@ def download_sample(clicks: int, data: dict) -> dict:
         return dict(content="", filename="", type="text/plain")
     else:
         return data
-
-
-if __name__ == "__main__":
-    app.run_server(debug=True)

@@ -1,6 +1,6 @@
 import logging
 
-from distributions_dashboard.dash_app import app
+from dist_dashboard.dash_app import app
 
 # Set waitress.queue logging level to ERROR
 logging.getLogger("waitress.queue").setLevel(logging.ERROR)

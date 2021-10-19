@@ -4,9 +4,9 @@ A dashboard to help explore some of the most common probability distributions. P
 
 You can [try it out here][2].
 
-[![screen capture](screen.gif)][2]
+[![screen capture](screencast.gif)][2]
 
-## Run locally
+## Running locally
 
 1. Download the files, and create a virtual environment:
 
@@ -20,9 +20,9 @@ You can [try it out here][2].
 2. Install the required packages, and launch the app:
 
     ```bash
-    pip install --upgrade pip
+    pip install -U pip
     pip install -r requirements.txt
-    waitress-serve distributions_dashboard:server
+    waitress-serve dist_dashboard:server
     ```
 
 [1]: https://dash.plotly.com/

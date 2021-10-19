@@ -1,0 +1,135 @@
+body {
+    margin: 5%;
+    color: #ccc;
+    background-color: rgb(20, 60, 60);
+    font: 0.8em 'Courier New', Courier, monospace;
+}
+
+label {
+    display: inline-block;
+    font-weight: bold;
+    margin: 15px 5px 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    font-weight: 600;
+}
+
+td {
+    padding: px;
+    border: 1px solid #ccc;
+}
+
+.description {
+    font-weight: 500;
+    color: #ccc;
+    border: 2px solid #ccc;
+    padding: 2%;
+    border-radius: 4px;
+    margin-bottom: 5%;
+}
+
+.description p {
+    margin: 2%;
+}
+
+.wiki-link {
+    color: cyan;
+    margin-left: 40%;
+    text-decoration: none;
+}
+
+.wiki-link:hover {
+    text-decoration: underline;
+}
+
+.stats-table {
+    margin: 5% auto;
+    width: 80%;
+}
+
+#histogram, #violin-plot, #ecdf-plot {
+    height: 45vh;
+    margin-bottom: 5%;
+}
+
+.custom-button {
+    display: block;
+    background-color: aqua;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin: 5% auto;
+    position: center;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.custom-button:hover {
+    background-color: #269191;
+    color: #eee;
+}
+
+/* 
+    Classes defined in dash
+    =======================
+*/
+
+.Select {
+    color: #ccc;
+}
+
+.Select-control {
+    background-color: #205050;
+    border-radius: 4px;
+    border: 1px solid cyan;
+}
+
+.is-open>.Select-control {
+    background: #205050;
+    border-color: cyan;
+}
+
+.is-focused:not(.is-open)>.Select-control {
+    border-color: cyan;
+}
+
+.Select-menu-outer {
+    background-color: #205050;
+    border: 1px solid cyan;
+}
+
+.Select-value-label {
+    color: aqua !important;
+}
+
+/* 
+    End of Classes defined in dash
+    ==============================
+*/
+
+@media only screen and (min-width: 768px) {
+    body {
+        margin: 6% 12%;
+    }
+    .stats-table {
+        width: 60%;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    body {
+        margin: 2%;
+    }
+    .content {
+        display: grid;
+        grid-template-columns: 3fr 4fr 4fr;
+        gap: 20px;
+    }
+    #histogram, #violin-plot, #ecdf-plot {
+        height: 40vh;
+        margin-bottom: 20px;
+    }
+}
