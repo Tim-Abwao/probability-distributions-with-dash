@@ -15,6 +15,7 @@ plot_config = {"displayModeBar": False}
 app = Dash(
     name="dist_dashboard",
     title="Probability Distributions Sampler",
+    external_scripts=["https://cdn.plot.ly/plotly-cartesian-2.6.0.min.js"],
     meta_tags=[
         {
             "name": "viewport",
