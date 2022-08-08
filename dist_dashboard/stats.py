@@ -25,20 +25,14 @@ def process_parameters(distribution: str, parameters: list) -> list:
     """Validate the parameters to ensure they are appropriate for the given
     distribution.
 
-    Parameters
-    ----------
-    distribution : str
-        The name of the probability distribution.
-    parameters : list
-        A list of parameter values for the distribution.
+    Args:
+        distribution (str): Name of probability distribution.
+        parameters (list): Parameter values for `distribution`.
 
-    Returns
-    -------
-    list
-        Parameter values.
+    Returns:
+        list: Validated parameter list.
     """
-    # The default value for `parameter2` in distributions having a single
-    # parameter is `None`.
+    # Remove `parameter2`==None in distributions with single parameter.
     param_list = [param for param in parameters if param is not None]
 
     if distribution in {"Bernoulli", "Geometric"}:
@@ -55,20 +49,16 @@ def process_parameters(distribution: str, parameters: list) -> list:
 
 
 def get_summary_statistics(data: pd.Series) -> dict:
-    """Get basic descriptive statistics.
+    """Compute descriptive statistics for the generated sample.
 
-    Parameters
-    ----------
-    data : pandas.core.series.Series
-        An array of numerical values.
+    Args:
+        data (pandas.Series): Sample values.
 
-    Returns
-    -------
-    dict
-        Summary statistics.
+    Returns:
+        dict: Summary statistics.
     """
     q1, q2, q3 = np.quantile(data, [0.25, 0.5, 0.75])
-    summary_stats = {
+    return {
         "Count": len(data),
         "Mean": data.mean(),
         "Standard Deviation": data.std(),
@@ -77,9 +67,8 @@ def get_summary_statistics(data: pd.Series) -> dict:
         "Median": q2,
         "Q3": q3,
         "Maximum": data.max(),
-        "Mode": stats.mode(data)[0][0],  # mode is nested in ModeResult
+        "Mode": stats.mode(data, keepdims=False).mode
     }
-    return {key: round(value, 4) for key, value in summary_stats.items()}
 
 
 def process_random_sample(
@@ -88,20 +77,14 @@ def process_random_sample(
     """Generate a sample of the specified probability distribution using the
     given parameters, then compute summary statistics.
 
-    Parameters
-    ----------
-    distribution : str
-        The name of the distribution.
-    size : int
-        The desired sample size.
-    parameters : list
-        A list of parameter values
+    Args:
+        distribution (str): Name of probabiltiy distribution.
+        size (int): Desired sample size.
+        parameters (list): Parameter values for `distribution`.
 
-    Returns
-    -------
-    dict
-        A random sample of the specified probability distribution as a numpy
-        array, plus the parameters applied, and summary statistics.
+    Returns:
+        dict: Sample as a numpy array, plus parameters applied & summary
+        statistics.
     """
     parameters = process_parameters(distribution, parameters)
     sample_data = pd.Series(

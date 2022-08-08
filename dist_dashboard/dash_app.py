@@ -9,8 +9,8 @@ from dist_dashboard.stats import process_random_sample
 with open("dist_dashboard/distributions.json") as file:
     distribution_data = json.load(file)
 
-param_ticks = [0, 0.5, 1, 2.5, 5, 7.5, 10]  # for parameter sliders
-plot_config = {"displayModeBar": False}
+PARAM_SLIDER_TICKS = [0, 0.5, 1, 2.5, 5, 7.5, 10]
+PLOT_CONFIG = {"displayModeBar": False}
 
 app = Dash(
     name="dist_dashboard",
@@ -100,14 +100,14 @@ app.layout = html.Div(
                         dcc.Loading(
                             color="cyan",
                             children=[
-                                dcc.Graph(id="histogram", config=plot_config)
+                                dcc.Graph(id="histogram", config=PLOT_CONFIG)
                             ],
                         ),
                         # Violin plot
                         dcc.Loading(
                             color="cyan",
                             children=[
-                                dcc.Graph(id="violin-plot", config=plot_config)
+                                dcc.Graph(id="violin-plot", config=PLOT_CONFIG)
                             ],
                         ),
                     ],
@@ -120,7 +120,7 @@ app.layout = html.Div(
                         dcc.Loading(
                             color="cyan",
                             children=[
-                                dcc.Graph(id="ecdf-plot", config=plot_config)
+                                dcc.Graph(id="ecdf-plot", config=PLOT_CONFIG)
                             ],
                         ),
                         # Summary statistics table
@@ -149,18 +149,14 @@ app.layout = html.Div(
     Input("current-distribution", "value"),
 )
 def create_parameter_sliders(distribution: str) -> tuple:
-    """Get the parameter label(s) & slider(s) for parameter(s) of the selected
+    """Get the parameter labels & sliders for parameters of the selected
     distribution.
 
-    Parameters
-    ----------
-    distribution : str
-        The name of the currently selected distribution.
+    Args:
+        distribution (str): The name of the currently selected distribution.
 
-    Returns
-    -------
-    tuple
-        Parameter label(s) and slider(s).
+    Returns"
+        tuple: Parameter labels and sliders.
     """
     dist_data = distribution_data[distribution]
     num_params = dist_data["num_params"]
@@ -179,7 +175,7 @@ def create_parameter_sliders(distribution: str) -> tuple:
                 step=0.01,
                 value=dist_data[f"param{idx}_max"] / 2,
                 tooltip={"placement": "top"},
-                marks={i: {"label": f"{i}"} for i in param_ticks},
+                marks={i: {"label": f"{i}"} for i in PARAM_SLIDER_TICKS},
             ),
         )
         for idx in range(1, num_params + 1)
@@ -189,7 +185,7 @@ def create_parameter_sliders(distribution: str) -> tuple:
         # Ensure a component with id 'parameter2' exists, since it is expected
         # in other callbacks.
         param_sliders.append(
-            (dcc.Input(id="parameter2", value=None, type="hidden"),)
+            (dcc.Input(id="parameter2", value=None, type="hidden"))
         )
     return sum(param_sliders, start=())  # Concatenate
 
@@ -201,15 +197,11 @@ def create_parameter_sliders(distribution: str) -> tuple:
 def show_distribution_info(distribution: str) -> list:
     """Get a brief summary of the selected distribution.
 
-    Parameters
-    ----------
-    distribution : str
-        The name of the current distribution
+    Args:
+        distribution (str): The name of the current distribution.
 
-    Returns
-    -------
-    list
-        A brief summary of the distribution, and a link to it's page on
+    Returns:
+        list: A brief summary of the distribution, and a link to it's page on
         Wikipedia.
     """
     dist_data = distribution_data[distribution]
@@ -247,19 +239,13 @@ def create_and_plot_sample(distribution: str, size: int, *parameters) -> tuple:
     parameters, then plot a histogram & violin-plot, and compute descriptive
     statistics.
 
-    Parameters
-    ----------
-    distribution : str
-        The name of the currently selected distribution
-    size : int
-        The set sample size
-    *parameters : int, float
-        1 or 2 parameter values, depending on the distribution
+    Args:
+        distribution (str): The name of the currently selected distribution.
+        size (int): The desired sample size.
+        *parameters (tuple): 1 or 2 parameter values, as per the distribution.
 
-    Returns
-    -------
-    tuple
-        A histogram, a violin_plot, an ecdf-plot, a table of summary
+    Returns:
+        tuple: A histogram, a violin_plot, an ecdf-plot, a table of summary
         statistics, the currently specified parameters and a csv file with the
         sample data for download.
     """
@@ -316,17 +302,12 @@ def download_sample(clicks: int, data: dict) -> dict:
     """Retrieve the current sample data for download whenever a user clicks on
     the sample download button.
 
-    Parameters
-    ----------
-    clicks : int
-        The number of clicks on the download button.
-    data : dict
-        A dictionary with the sample data.
+    Args:
+        clicks (int): The number of clicks on the download button.
+        data (dict): Sample values & meta-data.
 
-    Returns
-    -------
-    dict
-        The current sample's data and metadata for download.
+    Returns:
+        dict: Sample values and metadata for download.
     """
     if clicks == 0:
         return dict(content="", filename="", type="text/plain")

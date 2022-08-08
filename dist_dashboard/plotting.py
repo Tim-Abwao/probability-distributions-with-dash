@@ -6,15 +6,11 @@ from pandas.core.series import Series
 def customize_figure(fig: Figure) -> Figure:
     """Update the layout and style of plotly figures.
 
-    Parameters
-    ----------
-    fig : plotly.graph_objs._figure.Figure
-        The figure to modify
+    Args:
+        fig (plotly.graph_objs._figure.Figure): Figure to modify.
 
-    Returns
-    -------
-    plotly.graph_objs._figure.Figure
-        A customized figure.
+    Returns:
+        plotly.graph_objs._figure.Figure: Customized figure.
     """
     fig.update_xaxes(fixedrange=True, title="Values", title_font_size=12)
     fig.update_yaxes(fixedrange=True, title_font_size=12)
@@ -23,8 +19,8 @@ def customize_figure(fig: Figure) -> Figure:
         paper_bgcolor="#205050",
         plot_bgcolor="#205050",
         margin={"l": 60, "t": 40, "r": 10, "b": 10},
-        title_font_size=13,
         template="plotly_dark",
+        title_font_size=13,
     )
     return fig
 
@@ -32,17 +28,12 @@ def customize_figure(fig: Figure) -> Figure:
 def plot_ecdf(data: Series, distribution: str) -> Figure:
     """Get an Empirical Cummulative Distribution plot of the given data.
 
-    Parameters
-    ----------
-    data : Series
-        The data to plot
-    distribution : str
-        The data's probability distribution
+    Args:
+        data (pandas.Series): Values to plot.
+        distribution (str): Name of `data`s probability distribution.
 
-    Returns
-    -------
-    plotly.graph_objs._figure.Figure
-        A plotly figure.
+    Returns:
+        plotly.graph_objs._figure.Figure: A plotly figure.
     """
     fig = px.ecdf(
         x=data,
@@ -57,17 +48,12 @@ def plot_ecdf(data: Series, distribution: str) -> Figure:
 def plot_histogram(data: Series, distribution: str) -> Figure:
     """Get a histogram of the given data.
 
-    Parameters
-    ----------
-    data : Series
-        The data to plot
-    distribution : str
-        The data's probability distribution
+    Args:
+        data (pandas.Series): Values to plot.
+        distribution (str): Name of `data`s probability distribution.
 
-    Returns
-    -------
-    plotly.graph_objs._figure.Figure
-        A plotly figure
+    Returns:
+        plotly.graph_objs._figure.Figure: A plotly figure.
     """
     fig = px.histogram(
         x=data,
@@ -82,17 +68,12 @@ def plot_histogram(data: Series, distribution: str) -> Figure:
 def plot_violin(data: Series, distribution: str) -> Figure:
     """Get a violin-plot of the given data.
 
-    Parameters
-    ----------
-    data : Series
-        The data to plot
-    distribution : str
-        The data's probability distribution
+    Args:
+        data (pandas.Series): Values to plot.
+        distribution (str): Name of `data`s probability distribution.
 
-    Returns
-    -------
-    Figure
-        A plotly figure.
+    Returns:
+        plotly.graph_objs._figure.Figure: A plotly figure.
     """
     fig = px.violin(
         x=data,
