@@ -258,7 +258,12 @@ def create_and_plot_sample(distribution: str, size: int, *parameters) -> tuple:
 
     summary_statistics = sample["summary_statistics"]
     summary_statistics_table = [html.Th("Summary Statistics")] + [
-        html.Tr([html.Td(f"{name}:"), html.Td(value)])
+        html.Tr(
+            [
+                html.Td(f"{name}:"),
+                html.Td(f"{value:.5f}".rstrip("0").rstrip(".")),
+            ]
+        )
         for name, value in summary_statistics.items()
     ]
 
