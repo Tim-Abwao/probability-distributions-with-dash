@@ -185,7 +185,8 @@ def create_parameter_sliders(distribution: str) -> tuple:
         # Ensure a component with id 'parameter2' exists, since it is expected
         # in other callbacks.
         param_sliders.append(
-            (dcc.Input(id="parameter2", value=None, type="hidden"))
+            # Trailing comma necessary to make appended value a tuple.
+            (dcc.Input(id="parameter2", value=None, type="hidden"),)
         )
     return sum(param_sliders, start=())  # Concatenate
 
