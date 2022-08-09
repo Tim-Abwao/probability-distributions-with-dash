@@ -106,14 +106,14 @@ app.layout = html.Div(
                     children=[
                         # Histogram
                         dcc.Loading(
-                            color="cyan",
+                            color="#4cc",
                             children=[
                                 dcc.Graph(id="histogram", config=PLOT_CONFIG)
                             ],
                         ),
                         # Violin plot
                         dcc.Loading(
-                            color="cyan",
+                            color="#4cc",
                             children=[
                                 dcc.Graph(id="violin-plot", config=PLOT_CONFIG)
                             ],
@@ -126,7 +126,7 @@ app.layout = html.Div(
                     children=[
                         # ECDF plot
                         dcc.Loading(
-                            color="cyan",
+                            color="#4cc",
                             children=[
                                 dcc.Graph(id="ecdf-plot", config=PLOT_CONFIG)
                             ],
@@ -184,8 +184,6 @@ def update_parameter_sliders(distribution: str) -> tuple:
                 step=0.01,
                 tooltip={"placement": "top"},
                 value=dist_data[f"param{idx}_max"] / 2,
-                tooltip={"placement": "top"},
-                marks={i: {"label": f"{i}"} for i in PARAM_SLIDER_TICKS},
             ),
         )
         for idx in range(1, num_params + 1)

@@ -16,6 +16,7 @@ def customize_figure(fig: Figure) -> Figure:
     fig.update_yaxes(fixedrange=True, title_font_size=12)
     fig.update_layout(
         font_family="Courier New",
+        font_color="#ccc",
         paper_bgcolor="#205050",
         plot_bgcolor="#205050",
         margin={"l": 60, "t": 40, "r": 10, "b": 10},
@@ -37,7 +38,7 @@ def plot_ecdf(data: Series, distribution: str) -> Figure:
     """
     fig = px.ecdf(
         x=data,
-        color_discrete_sequence=["cyan"],
+        color_discrete_sequence=["#4cc"],
         lines=False,
         markers=True,
         title=f"ECDF Plot <i>({distribution} Distribution)</i>",
@@ -59,7 +60,7 @@ def plot_histogram(data: Series, distribution: str) -> Figure:
         x=data,
         nbins=50,
         opacity=0.9,
-        color_discrete_sequence=["cyan"],
+        color_discrete_sequence=["#4cc"],
         title=f"Histogram <i>({distribution} Distribution)</i>",
     )
     return customize_figure(fig)
@@ -79,7 +80,7 @@ def plot_violin(data: Series, distribution: str) -> Figure:
         x=data,
         box=True,
         points="all",
-        color_discrete_sequence=["cyan"],
+        color_discrete_sequence=["#4cc"],
         title=f"Violin Plot <i>({distribution} Distribution)</i>",
     )
     return customize_figure(fig)

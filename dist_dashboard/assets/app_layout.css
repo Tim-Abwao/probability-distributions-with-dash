@@ -37,7 +37,7 @@ td {
 }
 
 .wiki-link {
-    color: cyan;
+    color: #4cc;
     margin-left: 40%;
     text-decoration: none;
 }
@@ -60,7 +60,7 @@ td {
 
 .custom-button {
     display: block;
-    background-color: aqua;
+    background-color: #4cc;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -85,16 +85,16 @@ td {
 .Select-control {
     background-color: #205050;
     border-radius: 4px;
-    border: 1px solid cyan;
+    border: 1px solid #4cc;
 }
 
 .is-open>.Select-control {
     background: #205050;
-    border-color: cyan;
+    border-color: #4cc;
 }
 
 .is-focused:not(.is-open)>.Select-control {
-    border-color: cyan;
+    border-color: #4cc;
 }
 
 .rc-slider-dot {
@@ -112,11 +112,11 @@ td {
 
 .Select-menu-outer {
     background-color: #205050;
-    border: 1px solid cyan;
+    border: 1px solid #4cc;
 }
 
 .Select-value-label {
-    color: aqua !important;
+    color: #4cc !important;
 }
 
 /*  ==============================
