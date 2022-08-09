@@ -51,7 +51,9 @@ td {
     width: 80%;
 }
 
-#histogram, #violin-plot, #ecdf-plot {
+#histogram,
+#violin-plot,
+#ecdf-plot {
     height: 45vh;
     margin-bottom: 5%;
 }
@@ -69,13 +71,12 @@ td {
 
 .custom-button:hover {
     background-color: #269191;
-    color: #eee;
+    color: #ccc;
 }
 
-/* 
+/*  =======================
     Classes defined in dash
-    =======================
-*/
+    ======================= */
 
 .Select {
     color: #ccc;
@@ -96,6 +97,19 @@ td {
     border-color: cyan;
 }
 
+.rc-slider-dot {
+    background-color: #aaa;
+    border-color: #aaa;
+}
+
+.rc-slider-handle {
+    background-color: #205050;
+}
+
+.rc-slider-step {
+    background-color: #bbb;
+}
+
 .Select-menu-outer {
     background-color: #205050;
     border: 1px solid cyan;
@@ -105,15 +119,15 @@ td {
     color: aqua !important;
 }
 
-/* 
+/*  ==============================
     End of Classes defined in dash
-    ==============================
-*/
+    ==============================   */
 
 @media only screen and (min-width: 768px) {
     body {
         margin: 6% 12%;
     }
+
     .stats-table {
         width: 60%;
     }
@@ -123,12 +137,16 @@ td {
     body {
         margin: 2%;
     }
+
     .content {
         display: grid;
         grid-template-columns: 3fr 4fr 4fr;
         gap: 20px;
     }
-    #histogram, #violin-plot, #ecdf-plot {
+
+    #histogram,
+    #violin-plot,
+    #ecdf-plot {
         height: 40vh;
         margin-bottom: 20px;
     }

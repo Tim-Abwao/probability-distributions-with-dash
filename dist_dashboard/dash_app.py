@@ -31,7 +31,7 @@ app.layout = html.Div(
         html.Div(
             className="content",
             children=[
-                # Input & descriptions side-bar
+                # Side-bar with input sliders.
                 html.Div(
                     className="side-bar",
                     children=[
@@ -48,14 +48,11 @@ app.layout = html.Div(
                                     value="Normal",
                                     clearable=False,
                                     searchable=False,
-                                    options=[
-                                        {"label": dist, "value": dist}
-                                        for dist in distribution_data
-                                    ],
+                                    options=list(distribution_data),
                                 ),
                             ],
                         ),
-                        # Parameter slider(s)
+                        # Parameter sliders
                         html.Div(
                             id="distribution-param-sliders",
                             children=[
@@ -63,16 +60,14 @@ app.layout = html.Div(
                                     id="parameter1",
                                     value=10,
                                     marks={
-                                        i: {"label": f"{i}"}
-                                        for i in PARAM_SLIDER_TICKS
+                                        i: f"{i}" for i in PARAM_SLIDER_TICKS
                                     },
                                 ),
                                 dcc.Slider(
                                     id="parameter2",
                                     value=10,
                                     marks={
-                                        i: {"label": f"{i}"}
-                                        for i in PARAM_SLIDER_TICKS
+                                        i: f"{i}" for i in PARAM_SLIDER_TICKS
                                     },
                                 ),
                             ],
@@ -94,8 +89,7 @@ app.layout = html.Div(
                                     included=False,
                                     tooltip={"placement": "top"},
                                     marks={
-                                        i: {"label": f"{i}"}
-                                        for i in range(0, 500, 50)
+                                        i: f"{i}" for i in range(0, 500, 50)
                                     },
                                 ),
                             ],
@@ -162,9 +156,8 @@ app.layout = html.Div(
     Output("distribution-param-sliders", "children"),
     Input("current-distribution", "value"),
 )
-def create_parameter_sliders(distribution: str) -> tuple:
-    """Get the parameter labels & sliders for parameters of the selected
-    distribution.
+def update_parameter_sliders(distribution: str) -> tuple:
+    """Set the parameter labels & sliders for the selected distribution.
 
     Args:
         distribution (str): The name of the currently selected distribution.
@@ -184,9 +177,12 @@ def create_parameter_sliders(distribution: str) -> tuple:
             ),
             dcc.Slider(
                 id=f"parameter{idx}",
-                min=0.05,
+                included=False,
+                marks={i: {"label": f"{i}"} for i in PARAM_SLIDER_TICKS},
                 max=dist_data[f"param{idx}_max"],
+                min=0.05,
                 step=0.01,
+                tooltip={"placement": "top"},
                 value=dist_data[f"param{idx}_max"] / 2,
                 tooltip={"placement": "top"},
                 marks={i: {"label": f"{i}"} for i in PARAM_SLIDER_TICKS},
