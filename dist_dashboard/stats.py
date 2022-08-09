@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -21,7 +23,7 @@ distribution_functions = {
 }
 
 
-def process_parameters(distribution: str, parameters: list) -> list:
+def process_parameters(distribution: str, parameters: list) -> tuple:
     """Validate the parameters to ensure they are appropriate for the given
     distribution.
 
@@ -33,19 +35,19 @@ def process_parameters(distribution: str, parameters: list) -> list:
         list: Validated parameter list.
     """
     # Remove `parameter2`==None in distributions with single parameter.
-    param_list = [param for param in parameters if param is not None]
+    param_tuple = tuple(param for param in parameters if param is not None)
 
     if distribution in {"Bernoulli", "Geometric"}:
         # Probability must be in the range [0, 1]
-        return param_list if 0 <= param_list[0] <= 1 else [0.5]
+        return param_tuple if 0 <= param_tuple[0] <= 1 else (0.5,)
     elif distribution in {"Binomial", "Negative Binomial"}:
         # Number of trials must be an integer
-        n = round(param_list[0])
+        n = round(param_tuple[0])
         # Probability must be in the range [0, 1]
-        probabilty = param_list[1] if 0 <= param_list[1] <= 1 else 0.5
-        return [n, probabilty]
+        probabilty = param_tuple[1] if 0 <= param_tuple[1] <= 1 else 0.5
+        return (n, probabilty)
     else:
-        return param_list
+        return param_tuple
 
 
 def get_summary_statistics(data: pd.Series) -> dict:
@@ -67,12 +69,13 @@ def get_summary_statistics(data: pd.Series) -> dict:
         "Median": q2,
         "Q3": q3,
         "Maximum": data.max(),
-        "Mode": stats.mode(data, keepdims=False).mode
+        "Mode": stats.mode(data, keepdims=False).mode,
     }
 
 
+@lru_cache(maxsize=10)
 def process_random_sample(
-    distribution: str, size: int, parameters: list
+    distribution: str, size: int, parameters: tuple
 ) -> dict:
     """Generate a sample of the specified probability distribution using the
     given parameters, then compute summary statistics.
@@ -80,7 +83,7 @@ def process_random_sample(
     Args:
         distribution (str): Name of probabiltiy distribution.
         size (int): Desired sample size.
-        parameters (list): Parameter values for `distribution`.
+        parameters (tuple): Parameter values for `distribution`.
 
     Returns:
         dict: Sample as a numpy array, plus parameters applied & summary
