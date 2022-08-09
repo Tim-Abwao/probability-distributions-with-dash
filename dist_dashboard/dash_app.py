@@ -59,8 +59,22 @@ app.layout = html.Div(
                         html.Div(
                             id="distribution-param-sliders",
                             children=[
-                                dcc.Slider(id="parameter1"),
-                                dcc.Slider(id="parameter2"),
+                                dcc.Slider(
+                                    id="parameter1",
+                                    value=10,
+                                    marks={
+                                        i: {"label": f"{i}"}
+                                        for i in PARAM_SLIDER_TICKS
+                                    },
+                                ),
+                                dcc.Slider(
+                                    id="parameter2",
+                                    value=10,
+                                    marks={
+                                        i: {"label": f"{i}"}
+                                        for i in PARAM_SLIDER_TICKS
+                                    },
+                                ),
                             ],
                         ),
                         # Sample size slider
