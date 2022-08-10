@@ -26,16 +26,16 @@ distribution_functions = {
 }
 
 
-def process_parameters(distribution: str, parameters: list) -> tuple:
-    """Validate the parameters to ensure they are appropriate for the given
+def validate_parameters(distribution: str, parameters: tuple) -> tuple:
+    """Check parameters to ensure that they are appropriate for the given
     distribution.
 
     Args:
         distribution (str): Name of probability distribution.
-        parameters (list): Parameter values for `distribution`.
+        parameters (tuple): Parameter values for `distribution`.
 
     Returns:
-        list: Validated parameter list.
+        tuple: Validated parameter list.
     """
     # Remove `parameter2`==None in distributions with single parameter.
     param_tuple = tuple(param for param in parameters if param is not None)
@@ -92,7 +92,7 @@ def process_random_sample(
         dict: Sample as a numpy array, plus parameters applied & summary
         statistics.
     """
-    parameters = process_parameters(distribution, parameters)
+    parameters = validate_parameters(distribution, parameters)
     sample_data = pd.Series(
         distribution_functions[distribution].rvs(
             *parameters, size=size, random_state=SEED
