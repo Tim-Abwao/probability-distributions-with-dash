@@ -181,7 +181,7 @@ def update_parameter_sliders(distribution: str) -> tuple:
                 marks={i: {"label": f"{i}"} for i in PARAM_SLIDER_TICKS},
                 max=dist_data[f"param{idx}_max"],
                 min=0.05,
-                step=0.01,
+                step=0.01 if dist_data[f"param{idx}_max"] <= 1 else 0.5,
                 tooltip={"placement": "top"},
                 value=dist_data[f"param{idx}_max"] / 2,
             ),
