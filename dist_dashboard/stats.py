@@ -4,6 +4,9 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+
+SEED = 12345  # For reproducability
+
 distribution_functions = {
     "Normal": stats.norm,
     "Poisson": stats.poisson,
@@ -91,7 +94,9 @@ def process_random_sample(
     """
     parameters = process_parameters(distribution, parameters)
     sample_data = pd.Series(
-        distribution_functions[distribution].rvs(*parameters, size=size),
+        distribution_functions[distribution].rvs(
+            *parameters, size=size, random_state=SEED
+        ),
         name=f"{distribution}-sample",
     )
     return {
