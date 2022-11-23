@@ -106,14 +106,14 @@ app.layout = html.Div(
                     children=[
                         # Histogram
                         dcc.Loading(
-                            color="#4cc",
+                            color="#5aa",
                             children=[
                                 dcc.Graph(id="histogram", config=PLOT_CONFIG)
                             ],
                         ),
                         # Violin plot
                         dcc.Loading(
-                            color="#4cc",
+                            color="#5aa",
                             children=[
                                 dcc.Graph(id="violin-plot", config=PLOT_CONFIG)
                             ],
@@ -126,7 +126,7 @@ app.layout = html.Div(
                     children=[
                         # ECDF plot
                         dcc.Loading(
-                            color="#4cc",
+                            color="#5aa",
                             children=[
                                 dcc.Graph(id="ecdf-plot", config=PLOT_CONFIG)
                             ],

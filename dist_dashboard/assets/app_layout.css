@@ -1,8 +1,8 @@
 body {
-    margin: 5%;
+    background-color: #244;
     color: #ccc;
-    background-color: rgb(20, 60, 60);
     font: 0.8em 'Courier New', Courier, monospace;
+    margin: 5%;
 }
 
 label {
@@ -13,23 +13,23 @@ label {
 
 table {
     width: 100%;
+    border: 1px solid #aaa;
     border-collapse: collapse;
-    border: 1px solid #ccc;
     font-weight: 600;
 }
 
 td {
     padding: px;
-    border: 1px solid #ccc;
+    border: 1px solid #aaa;
 }
 
 .description {
-    font-weight: 500;
-    color: #ccc;
-    border: 2px solid #ccc;
-    padding: 2%;
+    border: 2px solid #aaa;
     border-radius: 4px;
+    color: #ccc;
+    font-weight: 500;
     margin-bottom: 5%;
+    padding: 2%;
 }
 
 .description p {
@@ -59,18 +59,18 @@ td {
 }
 
 .custom-button {
-    display: block;
-    background-color: #4cc;
-    padding: 10px 20px;
+    background-color: #7bb;
     border: none;
     border-radius: 5px;
-    margin: 5% auto;
-    position: center;
+    display: block;
     font-family: 'Courier New', Courier, monospace;
+    margin: 5% auto;
+    padding: 10px 20px;
+    position: center;
 }
 
 .custom-button:hover {
-    background-color: #269191;
+    background-color: #388;
     color: #ccc;
 }
 
@@ -83,40 +83,41 @@ td {
 }
 
 .Select-control {
-    background-color: #205050;
+    background-color: #244;
     border-radius: 4px;
-    border: 1px solid #4cc;
+    border: 1px solid #7bb;
 }
 
 .is-open>.Select-control {
-    background: #205050;
-    border-color: #4cc;
+    background: #244;
+    border-color: #7bb;
 }
 
 .is-focused:not(.is-open)>.Select-control {
-    border-color: #4cc;
+    border-color: #7bb;
 }
 
 .rc-slider-dot {
-    background-color: #aaa;
-    border-color: #aaa;
+    background-color: #ccc;
+    border-color: #ccc;
 }
 
 .rc-slider-handle {
-    background-color: #205050;
+    background-color: #355;
+    border: solid 2px #7bb;
 }
 
 .rc-slider-step {
-    background-color: #bbb;
+    background-color: #aaa;
 }
 
 .Select-menu-outer {
-    background-color: #205050;
-    border: 1px solid #4cc;
+    background-color: #244;
+    border: 1px solid #7bb;
 }
 
 .Select-value-label {
-    color: #4cc !important;
+    color: #7bb !important;
 }
 
 /*  ==============================

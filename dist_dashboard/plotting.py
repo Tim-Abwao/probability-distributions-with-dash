@@ -17,8 +17,8 @@ def customize_figure(fig: Figure) -> Figure:
     fig.update_layout(
         font_family="Courier New",
         font_color="#ccc",
-        paper_bgcolor="#205050",
-        plot_bgcolor="#205050",
+        paper_bgcolor="#244",
+        plot_bgcolor="#244",
         margin={"l": 60, "t": 40, "r": 10, "b": 10},
         template="plotly_dark",
         title_font_size=13,
@@ -38,12 +38,17 @@ def plot_ecdf(data: Series, distribution: str) -> Figure:
     """
     fig = px.ecdf(
         x=data,
-        color_discrete_sequence=["#4cc"],
+        color_discrete_sequence=["#7bb"],
         lines=False,
         markers=True,
         title=f"ECDF Plot <i>({distribution} Distribution)</i>",
     )
-    return customize_figure(fig)
+    fig = customize_figure(fig)
+    fig.update_xaxes(
+        gridcolor="#777", linecolor="#777", linewidth=2, zerolinecolor="#777"
+    )
+    fig.update_yaxes(gridcolor="#777")
+    return fig
 
 
 def plot_histogram(data: Series, distribution: str) -> Figure:
@@ -60,10 +65,13 @@ def plot_histogram(data: Series, distribution: str) -> Figure:
         x=data,
         nbins=50,
         opacity=0.9,
-        color_discrete_sequence=["#4cc"],
+        color_discrete_sequence=["#7bb"],
         title=f"Histogram <i>({distribution} Distribution)</i>",
     )
-    return customize_figure(fig)
+    fig = customize_figure(fig)
+    fig.update_xaxes(linecolor="#777", linewidth=2)
+    fig.update_yaxes(gridcolor="#777")
+    return fig
 
 
 def plot_violin(data: Series, distribution: str) -> Figure:
@@ -80,7 +88,9 @@ def plot_violin(data: Series, distribution: str) -> Figure:
         x=data,
         box=True,
         points="all",
-        color_discrete_sequence=["#4cc"],
+        color_discrete_sequence=["#7bb"],
         title=f"Violin Plot <i>({distribution} Distribution)</i>",
     )
-    return customize_figure(fig)
+    fig = customize_figure(fig)
+    fig.update_xaxes(gridcolor="#777", zerolinecolor="#777")
+    return fig
