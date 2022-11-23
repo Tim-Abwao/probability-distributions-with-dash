@@ -2,9 +2,11 @@
 
 A dashboard to help explore some of the most common probability distributions. Powered by [Dash][dash] & [SciPy][scipy].
 
-You can [try it out here][app-link].
+You can [try it out here][app-link], courtesy of [Render][render].
 
-[![screen capture](screencast.gif)][app-link]
+>**NOTE:** Free-hosted apps might take a while to load since they are shut down when not in use.
+
+![screen capture](screencast.gif)
 
 ## Running locally
 
@@ -25,6 +27,7 @@ You can [try it out here][app-link].
     waitress-serve dist_dashboard:server
     ```
 
+[app-link]: https://probability-distributions.onrender.com
 [dash]: https://dash.plotly.com/
+[render]: https://render.com/
 [scipy]: https://scipy.org/
-[app-link]: https://probability-distributions.herokuapp.com/
